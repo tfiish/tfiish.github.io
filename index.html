@@ -255,12 +255,12 @@
         <p class="stack">pnpm monorepo · Next.js 15 web app on Vercel · Supabase Postgres · ingest worker on GitHub Actions</p>
         <p class="label">Managing</p>
         <ul class="manage">
-          <li>Domain at Porkbun. Hosted on Vercel under the personal account, reading from Supabase.</li>
-          <li>Ingest runs on GitHub Actions: a full daily pass, and an hourly video pass fired by an outside cron service because GitHub's own schedule is unreliable at that cadence.</li>
-          <li>A weekly audit posts findings to a GitHub issue every Monday. A quarterly drift audit, run by Claude Code, posts to a long-lived issue. Read both: a skipped or stuck run looks exactly like a clean one.</li>
-          <li>UptimeRobot runs two monitors and emails when either goes down: one polls the site every 5 minutes, so Down means readers can't reach it; the other polls the health endpoint every 45 minutes, so Down means the site is fine but the ingest cron has stopped and the archive isn't growing.</li>
-          <li>Emailing hi@ delivers through Resend, as does the suggestions form.</li>
-          <li>PostHog handles analytics, cookieless.</li>
+          <li>Domain at <strong>Porkbun</strong>. Hosted on <strong>Vercel</strong> under its own personal account tied to its gmail address, reading from <strong>Supabase</strong>.</li>
+          <li>Ingest runs on <strong>GitHub Actions</strong>: a full daily pass, and an hourly video pass fired by an outside cron service because GitHub's own schedule is unreliable at that cadence.</li>
+          <li>A weekly audit posts findings to a <strong>GitHub</strong> issue every Monday. A quarterly drift audit, run by <strong>Claude Code</strong>, posts to a long-lived issue.</li>
+          <li><strong>UptimeRobot</strong> runs two monitors and emails when either goes down: one polls the site every 5 minutes, so Down means readers can't reach it; the other polls the health endpoint every 45 minutes, so Down means the site is fine but the ingest cron has stopped and the archive isn't growing.</li>
+          <li>Emailing hi@ delivers through <strong>Resend</strong>, as does the suggestions form.</li>
+          <li><strong>PostHog</strong> handles analytics (cookieless).</li>
           <li>A couple of tokens expire yearly (<code>CLAUDE_CODE_OAUTH_TOKEN</code> for the drift audit, <code>GITHUB_DISPATCH_TOKEN</code> for the hourly trigger). Rotate them together, ahead of time; an expired one degrades quietly rather than failing loudly.</li>
         </ul>
       </article>
@@ -276,11 +276,11 @@
         <p class="stack">Vite · React · TypeScript · PWA with a service worker · all data in IndexedDB, no server · d3-geo · ts-fsrs · Cloudflare Pages, built from the <code>release</code> branch</p>
         <p class="label">Managing</p>
         <ul class="manage">
-          <li>Own domain at Porkbun, auto-renew on.</li>
-          <li>Cloudflare does everything else: Pages builds on every push to <code>release</code>, issues the certificate, redirects www, and runs Email Routing.</li>
-          <li>Mail to hi@ forwards to the Gmail inbox. Catch-all is off, so any other address is dropped.</li>
+          <li>Own domain at <strong>Porkbun</strong>, auto-renew on.</li>
+          <li><strong>Cloudflare</strong> does everything else: Pages builds on every push to <code>release</code>, issues the certificate, redirects www, and runs Email Routing.</li>
+          <li>Mail to hi@ forwards to the <strong>Gmail</strong> inbox via <strong>Cloudflare Email Routing</strong>. Catch-all is off, so any other address is dropped.</li>
           <li>No server and no accounts. Reader progress lives in their own browser.</li>
-          <li>Yearly: Natural Earth data and the UN member list.</li>
+          <li>Yearly: refresh the <strong>Natural Earth</strong> data and the <strong>UN</strong> member list.</li>
         </ul>
       </article>
 
@@ -297,12 +297,12 @@
         <p class="stack">Next.js · React · TypeScript · Tailwind · Supabase (Postgres, auth) · Vercel, with a Vercel cron and pg_cron · ships via <code>npm run deploy</code></p>
         <p class="label">Managing</p>
         <ul class="manage">
-          <li>A Onespot product. Mail, legal, and routing all go through that entity; the contact address is hi@ on the domain.</li>
-          <li>Both domains at Porkbun on auto-renew.</li>
-          <li>Two Supabase projects, staging and production. A daily cron pings both so the free tier doesn't pause them.</li>
-          <li>Auth email goes out through Resend. A weekly DMARC summary lands in hi@.</li>
-          <li>Monthly: Supabase and Vercel usage, Resend quota, Search Console.</li>
-          <li>Google deletes a "Sign in with Google" client that goes six months unused. Production gets real sign-ins, but staging only sees dev traffic, so sign in with Google on staging every five months or so. If it lapses, staging sign-in fails until the client is restored in Google Cloud.</li>
+          <li>A <strong>Onespot</strong> product. Mail, legal, and routing all go through that entity; the contact address is hi@ on the domain.</li>
+          <li>Both domains at <strong>Porkbun</strong> on auto-renew.</li>
+          <li>Two <strong>Supabase</strong> projects, staging and production. A daily cron pings both so the free tier doesn't pause them.</li>
+          <li>Auth email goes out through <strong>Resend</strong>. A weekly DMARC summary lands in hi@.</li>
+          <li>Monthly: <strong>Supabase</strong> and <strong>Vercel</strong> usage, <strong>Resend</strong> quota, <strong>Search Console</strong>.</li>
+          <li><strong>Google</strong> deletes a "Sign in with Google" client that goes six months unused. Production gets real sign-ins, but staging only sees dev traffic, so sign in with Google on staging every five months or so. If it lapses, staging sign-in fails until the client is restored in <strong>Google Cloud</strong>.</li>
         </ul>
       </article>
 
@@ -318,7 +318,7 @@
         <p class="label">Managing</p>
         <ul class="manage">
           <li>Nothing to manage: no hosting, no accounts, no domain, nothing runs on a schedule. It ships as source.</li>
-          <li>Building needs macOS 14 or later and Xcode 16 or the Command Line Tools. Export needs FFmpeg from Homebrew.</li>
+          <li>Building needs macOS 14 or later and <strong>Xcode</strong> 16 or the Command Line Tools. Export needs <strong>FFmpeg</strong> from <strong>Homebrew</strong>.</li>
         </ul>
       </article>
 
@@ -329,12 +329,12 @@
           <span class="chip">no custom domain</span>
           <a class="repo" href="https://github.com/tfiish/markmadness">repo</a>
         </div>
-        <p class="blurb">The official portal for all things Mark Madness.</p>
+        <p class="blurb">The official portal for all things Mark Madness (private for competitors only).</p>
         <p class="stack">Vite · React · TypeScript · Tailwind · shadcn/Radix · Vercel Hobby plan</p>
         <p class="label">Managing</p>
         <ul class="manage">
-          <li>Backend is Lovable Cloud, which is Supabase underneath: auth, database, and edge functions. Migrations are managed centrally and never run locally.</li>
-          <li>Vercel Hobby only deploys pushes from the repo owner.</li>
+          <li>Backend is <strong>Lovable Cloud</strong>, which is <strong>Supabase</strong> underneath: auth, database, and edge functions. Migrations are managed centrally and never run locally.</li>
+          <li><strong>Vercel</strong> Hobby only deploys pushes from the repo owner.</li>
           <li>Backend credentials live in a gitignored <code>.env</code>, never in the repo.</li>
         </ul>
       </article>
