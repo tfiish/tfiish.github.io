@@ -92,6 +92,39 @@
     }
     #theme:hover { color: var(--fg); border-color: var(--accent); }
     :root[data-theme="terminal"] #theme { border-radius: 2px; }
+    .toolbar {
+      display: flex;
+      gap: .5rem;
+      margin: 0 0 1rem;
+    }
+    #search {
+      flex: 1;
+      min-width: 0;
+      font: inherit;
+      font-size: .95rem;
+      color: var(--fg);
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: .5em .8em;
+    }
+    #search:focus { outline: none; border-color: var(--accent); }
+    #search::placeholder { color: var(--muted); }
+    #sort {
+      font: inherit;
+      font-size: .85rem;
+      color: var(--muted);
+      background: var(--chip);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: .5em .9em;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    #sort:hover { color: var(--fg); border-color: var(--accent); }
+    :root[data-theme="terminal"] #search,
+    :root[data-theme="terminal"] #sort { border-radius: 2px; }
+    .empty { color: var(--muted); margin: 0 0 1rem; }
     .cards {
       display: grid;
       gap: 1rem;
@@ -193,48 +226,15 @@
       <button id="theme" type="button" aria-label="Switch theme">theme</button>
     </header>
 
-    <!-- A click anywhere on a card follows its title link, unless it lands on another link or ends a text selection. To add a project, copy a whole <article> block. -->
+    <div class="toolbar">
+      <input id="search" type="search" placeholder="Search projects" aria-label="Search projects" autocomplete="off">
+      <button id="sort" type="button" aria-label="Change sort order">default</button>
+    </div>
+    <p id="empty" class="empty" hidden>No projects match.</p>
+
+    <!-- A click anywhere on a card follows its title link, unless it lands on another link or ends a text selection.
+         Document order here is the default sort order. To add a project, copy a whole <article> block into place. -->
     <div class="cards">
-
-      <article class="card">
-        <div class="head">
-          <h2><a class="main" href="https://1qrl.app">1QRL</a></h2>
-          <span class="chip domain">1qrl.app</span>
-          <span class="chip domain">1qrl.cc</span>
-          <span class="chip">Porkbun</span>
-          <span class="chip">Onespot</span>
-          <a class="repo" href="https://github.com/tfiish/1qrl">repo</a>
-        </div>
-        <p class="blurb">Tiny links, big QRs. A URL shortener whose short links encode into low-density QR codes that still scan from across a room.</p>
-        <p class="stack">Next.js · React · TypeScript · Tailwind · Supabase (Postgres, auth) · Vercel, with a Vercel cron and pg_cron · ships via <code>npm run deploy</code></p>
-        <p class="label">Managing</p>
-        <ul class="manage">
-          <li>A Onespot product. Mail, legal, and routing all go through that entity; the contact address is hi@1qrl.app.</li>
-          <li>Both domains at Porkbun on auto-renew. A lapse kills every short link at once, so confirm auto-renew and the card yearly.</li>
-          <li>Two Supabase projects, staging and production. A daily cron pings both so the free tier doesn't pause them.</li>
-          <li>Auth email goes out through Resend. A weekly DMARC summary lands in hi@.</li>
-          <li>Monthly: Supabase and Vercel usage, Resend quota, Search Console. Every five months: sign in with Google on staging and production so Google doesn't delete the OAuth clients.</li>
-        </ul>
-      </article>
-
-      <article class="card">
-        <div class="head">
-          <h2><a class="main" href="https://wholewideworld.app">Whole Wide World</a></h2>
-          <span class="chip domain">wholewideworld.app</span>
-          <span class="chip">Porkbun</span>
-          <a class="repo" href="https://github.com/tfiish/wholewideworld">repo</a>
-        </div>
-        <p class="blurb">A mobile-first web app that uses spaced repetition to teach where every country, state, and province is, on a globe you can spin and zoom.</p>
-        <p class="stack">Vite · React · TypeScript · PWA with a service worker · all data in IndexedDB, no server · d3-geo · ts-fsrs · Cloudflare Pages, built from the <code>release</code> branch</p>
-        <p class="label">Managing</p>
-        <ul class="manage">
-          <li>Own domain at Porkbun, auto-renew on. Check it a few weeks before the yearly renewal.</li>
-          <li>Cloudflare does everything else: Pages builds on every push to <code>release</code>, issues the certificate, redirects www, and runs Email Routing.</li>
-          <li>Mail to hi@wholewideworld.app forwards to the Gmail inbox. Catch-all is off, so any other address is dropped. Send a test mail now and then.</li>
-          <li>No server and no accounts. Reader progress lives in their own browser.</li>
-          <li>Yearly: Natural Earth data and the UN member list, plus a re-read of the Terms and Privacy policy. Push <code>main</code> to the private GitHub repo by hand after each commit; nothing pushes on its own.</li>
-        </ul>
-      </article>
 
       <article class="card">
         <div class="head">
@@ -259,18 +259,41 @@
 
       <article class="card">
         <div class="head">
-          <h2><a class="main" href="https://markmadness.vercel.app">Mark Madness</a></h2>
-          <span class="chip domain">markmadness.vercel.app</span>
-          <span class="chip">no custom domain</span>
-          <a class="repo" href="https://github.com/tfiish/markmadness">repo</a>
+          <h2><a class="main" href="https://wholewideworld.app">Whole Wide World</a></h2>
+          <span class="chip domain">wholewideworld.app</span>
+          <span class="chip">Porkbun</span>
+          <a class="repo" href="https://github.com/tfiish/wholewideworld">repo</a>
         </div>
-        <p class="blurb">The official portal for all things Mark Madness.</p>
-        <p class="stack">Vite · React · TypeScript · Tailwind · shadcn/Radix · Vercel Hobby plan</p>
+        <p class="blurb">A mobile-first web app that uses spaced repetition to teach where every country, state, and province is, on a globe you can spin and zoom.</p>
+        <p class="stack">Vite · React · TypeScript · PWA with a service worker · all data in IndexedDB, no server · d3-geo · ts-fsrs · Cloudflare Pages, built from the <code>release</code> branch</p>
         <p class="label">Managing</p>
         <ul class="manage">
-          <li>Backend is Lovable Cloud, which is Supabase underneath: auth, database, and edge functions. Migrations are managed centrally and never run locally.</li>
-          <li>Vercel Hobby only deploys pushes from the repo owner. After merging someone else's PR, push an empty commit to <code>main</code> to trigger the deploy. Cap is 100 deploys a day, so batch pushes.</li>
-          <li>Backend credentials live in a gitignored <code>.env</code>, never in the repo.</li>
+          <li>Own domain at Porkbun, auto-renew on. Check it a few weeks before the yearly renewal.</li>
+          <li>Cloudflare does everything else: Pages builds on every push to <code>release</code>, issues the certificate, redirects www, and runs Email Routing.</li>
+          <li>Mail to hi@wholewideworld.app forwards to the Gmail inbox. Catch-all is off, so any other address is dropped. Send a test mail now and then.</li>
+          <li>No server and no accounts. Reader progress lives in their own browser.</li>
+          <li>Yearly: Natural Earth data and the UN member list, plus a re-read of the Terms and Privacy policy. Push <code>main</code> to the private GitHub repo by hand after each commit; nothing pushes on its own.</li>
+        </ul>
+      </article>
+
+      <article class="card">
+        <div class="head">
+          <h2><a class="main" href="https://1qrl.app">1QRL</a></h2>
+          <span class="chip domain">1qrl.app</span>
+          <span class="chip domain">1qrl.cc</span>
+          <span class="chip">Porkbun</span>
+          <span class="chip">Onespot</span>
+          <a class="repo" href="https://github.com/tfiish/1qrl">repo</a>
+        </div>
+        <p class="blurb">Tiny links, big QRs. A URL shortener whose short links encode into low-density QR codes that still scan from across a room.</p>
+        <p class="stack">Next.js · React · TypeScript · Tailwind · Supabase (Postgres, auth) · Vercel, with a Vercel cron and pg_cron · ships via <code>npm run deploy</code></p>
+        <p class="label">Managing</p>
+        <ul class="manage">
+          <li>A Onespot product. Mail, legal, and routing all go through that entity; the contact address is hi@1qrl.app.</li>
+          <li>Both domains at Porkbun on auto-renew. A lapse kills every short link at once, so confirm auto-renew and the card yearly.</li>
+          <li>Two Supabase projects, staging and production. A daily cron pings both so the free tier doesn't pause them.</li>
+          <li>Auth email goes out through Resend. A weekly DMARC summary lands in hi@.</li>
+          <li>Monthly: Supabase and Vercel usage, Resend quota, Search Console. Every five months: sign in with Google on staging and production so Google doesn't delete the OAuth clients.</li>
         </ul>
       </article>
 
@@ -291,6 +314,23 @@
         </ul>
       </article>
 
+      <article class="card">
+        <div class="head">
+          <h2><a class="main" href="https://markmadness.vercel.app">Mark Madness</a></h2>
+          <span class="chip domain">markmadness.vercel.app</span>
+          <span class="chip">no custom domain</span>
+          <a class="repo" href="https://github.com/tfiish/markmadness">repo</a>
+        </div>
+        <p class="blurb">The official portal for all things Mark Madness.</p>
+        <p class="stack">Vite · React · TypeScript · Tailwind · shadcn/Radix · Vercel Hobby plan</p>
+        <p class="label">Managing</p>
+        <ul class="manage">
+          <li>Backend is Lovable Cloud, which is Supabase underneath: auth, database, and edge functions. Migrations are managed centrally and never run locally.</li>
+          <li>Vercel Hobby only deploys pushes from the repo owner. After merging someone else's PR, push an empty commit to <code>main</code> to trigger the deploy. Cap is 100 deploys a day, so batch pushes.</li>
+          <li>Backend credentials live in a gitignored <code>.env</code>, never in the repo.</li>
+        </ul>
+      </article>
+
     </div>
 
     <footer>
@@ -298,6 +338,43 @@
     </footer>
   </main>
   <script>
+    (function () {
+      var grid = document.querySelector('.cards');
+      var cards = Array.prototype.slice.call(grid.children);
+      var search = document.getElementById('search');
+      var sortButton = document.getElementById('sort');
+      var empty = document.getElementById('empty');
+      var SORTS = ['default', 'A\u2013Z'];
+      var sort = 'default';
+      try { if (SORTS.indexOf(localStorage.getItem('sort')) !== -1) sort = localStorage.getItem('sort'); } catch (e) {}
+
+      function title(card) { return card.querySelector('h2').textContent.trim(); }
+
+      function render() {
+        var q = search.value.trim().toLowerCase();
+        var ordered = cards.slice();
+        if (sort !== 'default') {
+          ordered.sort(function (a, b) { return title(a).localeCompare(title(b), undefined, { sensitivity: 'base' }); });
+        }
+        var shown = 0;
+        ordered.forEach(function (card) {
+          var hit = !q || card.textContent.toLowerCase().indexOf(q) !== -1;
+          card.hidden = !hit;
+          if (hit) shown++;
+          grid.appendChild(card);
+        });
+        empty.hidden = shown > 0;
+        sortButton.textContent = sort;
+      }
+
+      search.addEventListener('input', render);
+      sortButton.addEventListener('click', function () {
+        sort = SORTS[(SORTS.indexOf(sort) + 1) % SORTS.length];
+        try { localStorage.setItem('sort', sort); } catch (e) {}
+        render();
+      });
+      render();
+    })();
     document.querySelectorAll('.card').forEach(function (card) {
       card.addEventListener('click', function (e) {
         if (e.target.closest('a')) return;
