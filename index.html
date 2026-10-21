@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tyler Fisher · Projects</title>
+  <meta name="description" content="Side projects by Tyler Fisher.">
+  <style>
+    :root {
+      --bg: #fafaf7;
+      --fg: #1a1a1a;
+      --muted: #6b6b66;
+      --line: #e4e4de;
+      --accent: #2554c7;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #141414;
+        --fg: #ececec;
+        --muted: #9a9a94;
+        --line: #2c2c2c;
+        --accent: #7aa2ff;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg);
+      font: 17px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    main {
+      max-width: 40rem;
+      margin: 0 auto;
+      padding: 4rem 1rem 5rem;
+    }
+    h1 { font-size: 1.6rem; margin: 0 0 .25rem; }
+    .tagline { color: var(--muted); margin: 0 0 2.5rem; }
+    ul { list-style: none; padding: 0; margin: 0; }
+    li {
+      padding: 1rem 0;
+      border-top: 1px solid var(--line);
+    }
+    li:last-child { border-bottom: 1px solid var(--line); }
+    li a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    li a:hover { text-decoration: underline; }
+    li p { margin: .2rem 0 0; color: var(--muted); }
+    footer {
+      margin-top: 3rem;
+      color: var(--muted);
+      font-size: .9rem;
+    }
+    footer a { color: inherit; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Tyler Fisher</h1>
+    <p class="tagline">Side projects, in no particular order.</p>
+
+    <!-- To add a project, copy one <li> block. Order is whatever you want it to be. -->
+    <ul>
+      <li>
+        <a href="https://github.com/tfiish/storystamper">StoryStamper</a>
+        <p>A native, lightweight Mac app to quickly add Instagram-story-style text blocks to a vertical video.</p>
+      </li>
+      <li>
+        <a href="https://github.com/tfiish/poker-hand-comparator">Poker hand comparator</a>
+        <p>Python scripts to compare any two hands in Texas Hold'em.</p>
+      </li>
+      <li>
+        <a href="https://github.com/tfiish/wholewideworld">Whole Wide World</a>
+        <p>A mobile-first web app that uses spaced repetition to teach where every country, state, and province is, on a globe you can spin and zoom.</p>
+      </li>
+      <li>
+        <a href="https://github.com/tfiish/unspoiled">Unspoiled</a>
+        <p>Spoiler-free sports highlights aggregator.</p>
+      </li>
+      <li>
+        <a href="https://github.com/tfiish/markmadness">Mark Madness</a>
+        <p>The official portal for all things Mark Madness.</p>
+      </li>
+      <li>
+        <a href="https://github.com/tfiish/sleeksleep">SleekSleep</a>
+        <p>A minimal iPhone app that logs sleep to Apple Health and charts it. No accounts, no server.</p>
+      </li>
+    </ul>
+
+    <footer>
+      <a href="https://github.com/tfiish">GitHub</a>
+    </footer>
+  </main>
+</body>
+</html>
