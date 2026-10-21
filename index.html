@@ -161,10 +161,15 @@
     .card { cursor: pointer; }
     .repo {
       margin-left: auto;
-      font-size: .78rem;
+      font-size: .8rem;
+      line-height: 1;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
       color: var(--muted);
       text-decoration: none;
-      border-bottom: 1px solid var(--line);
+      padding: .55em .8em;
+      margin: -.55em -.8em -.55em auto;
+      border: 1px solid transparent;
+      border-radius: 8px;
     }
     .repo:hover { color: var(--accent); border-color: var(--accent); }
     .head {
@@ -252,7 +257,7 @@
 
     <div class="toolbar">
       <input id="search" type="search" placeholder="Search projects" aria-label="Search projects" autocomplete="off">
-      <button id="sort" type="button" aria-label="Change sort order">default</button>
+      <button id="sort" type="button" aria-label="Change sort order">&#8597;&#65039;</button>
       <button id="notes" type="button" aria-label="Expand or collapse all managing notes">expand</button>
     </div>
     <p id="empty" class="empty" hidden>No projects match.</p>
@@ -266,7 +271,7 @@
           <h2><a class="main" href="https://unspoiled.xyz">Unspoiled</a></h2>
           <span class="chip domain">unspoiled.xyz</span>
           <span class="chip">Porkbun</span>
-          <a class="repo" href="https://github.com/tfiish/unspoiled">repo</a>
+          <a class="repo" href="https://github.com/tfiish/unspoiled" aria-label="Repository" title="Repository">&lt;/&gt;</a>
         </div>
         <p class="blurb">Spoiler-free sports highlights aggregator.</p>
         <p class="stack">pnpm monorepo · Next.js 15 web app on Vercel · Supabase Postgres · ingest worker on GitHub Actions</p>
@@ -290,7 +295,7 @@
           <h2><a class="main" href="https://wholewideworld.app">Whole Wide World</a></h2>
           <span class="chip domain">wholewideworld.app</span>
           <span class="chip">Porkbun</span>
-          <a class="repo" href="https://github.com/tfiish/wholewideworld">repo</a>
+          <a class="repo" href="https://github.com/tfiish/wholewideworld" aria-label="Repository" title="Repository">&lt;/&gt;</a>
         </div>
         <p class="blurb">A mobile-first web app that uses spaced repetition to teach where every country, state, and province is, on a globe you can spin and zoom.</p>
         <p class="stack">Vite · React · TypeScript · PWA with a service worker · all data in IndexedDB, no server · d3-geo · ts-fsrs · Cloudflare Pages, built from the <code>release</code> branch</p>
@@ -310,10 +315,9 @@
         <div class="head">
           <h2><a class="main" href="https://1qrl.app">1QRL</a></h2>
           <span class="chip domain">1qrl.app</span>
-          <span class="chip domain">1qrl.cc</span>
           <span class="chip">Porkbun</span>
           <span class="chip">Onespot</span>
-          <a class="repo" href="https://github.com/onespotapps/1qrl">repo</a>
+          <a class="repo" href="https://github.com/onespotapps/1qrl" aria-label="Repository" title="Repository">&lt;/&gt;</a>
         </div>
         <p class="blurb">Tiny links, big QRs. A URL shortener whose short links encode into low-density QR codes that still scan from across a room.</p>
         <p class="stack">Next.js · React · TypeScript · Tailwind · Supabase (Postgres, auth) · Vercel, with a Vercel cron and pg_cron · ships via <code>npm run deploy</code></p>
@@ -321,6 +325,7 @@
         <summary class="label">Managing</summary>
         <ul class="manage">
           <li>A <strong>Onespot</strong> product. Mail, legal, and routing all go through that entity; the contact address is hi@ on the domain.</li>
+          <li>Short links live at <code>1qrl.cc/</code>; the app itself is on <code>1qrl.app</code>.</li>
           <li>Both domains at <strong>Porkbun</strong> on auto-renew.</li>
           <li>Two <strong>Supabase</strong> projects, staging and production. A daily cron pings both so the free tier doesn't pause them.</li>
           <li>Anonymous link creation on the home page is gated by <strong>Cloudflare Turnstile</strong>.</li>
@@ -336,7 +341,7 @@
           <h2><a class="main" href="https://github.com/tfiish/storystamper">StoryStamper</a></h2>
           <span class="chip">GitHub, public</span>
           <span class="chip">Mac app</span>
-          <a class="repo" href="https://github.com/tfiish/storystamper">repo</a>
+          <a class="repo" href="https://github.com/tfiish/storystamper" aria-label="Repository" title="Repository">&lt;/&gt;</a>
         </div>
         <p class="blurb">A native, lightweight Mac app to quickly add Instagram-story-style text blocks to a vertical video.</p>
         <p class="stack">Swift 6 · SwiftUI · Swift Package, no Xcode project · FFmpeg for export · ad-hoc signed, not notarized · built with <code>Scripts/make-app.sh</code></p>
@@ -354,7 +359,7 @@
           <h2><a class="main" href="https://markmadness.vercel.app">Mark Madness</a></h2>
           <span class="chip domain">markmadness.vercel.app</span>
           <span class="chip">no custom domain</span>
-          <a class="repo" href="https://github.com/tfiish/markmadness">repo</a>
+          <a class="repo" href="https://github.com/tfiish/markmadness" aria-label="Repository" title="Repository">&lt;/&gt;</a>
         </div>
         <p class="blurb">The official portal for all things Mark Madness (private for competitors only).</p>
         <p class="stack">Vite · React · TypeScript · Tailwind · shadcn/Radix · Vercel Hobby plan</p>
@@ -372,14 +377,14 @@
         <div class="head">
           <h2><a class="main" href="https://tfiish.github.io">tfiish</a></h2>
           <span class="chip domain">tfiish.github.io</span>
-          <a class="repo" href="https://github.com/tfiish/tfiish.github.io">repo</a>
+          <a class="repo" href="https://github.com/tfiish/tfiish.github.io" aria-label="Repository" title="Repository">&lt;/&gt;</a>
         </div>
         <p class="blurb">This page.</p>
-        <p class="stack">One HTML file · GitHub Pages</p>
+        <p class="stack">GitHub Pages</p>
         <details class="managing">
         <summary class="label">Managing</summary>
         <ul class="manage">
-          <li>Nothing. Push to <code>main</code> and <strong>GitHub Pages</strong> redeploys.</li>
+          <li>Push updates (to the one HTML file) to <code>main</code> and <strong>GitHub Pages</strong> redeploys.</li>
         </ul>
         </details>
       </article>
@@ -430,10 +435,19 @@
           grid.appendChild(card);
         });
         empty.hidden = shown > 0;
-        sortButton.textContent = sort;
+        sortButton.textContent = sort === 'default' ? '\u2195\uFE0F' : sort;
       }
 
       search.addEventListener('input', render);
+      // A bare "f" anywhere on the page jumps to the search box. Cmd/Ctrl+F stays the browser's.
+      document.addEventListener('keydown', function (e) {
+        if (e.key !== 'f' || e.metaKey || e.ctrlKey || e.altKey) return;
+        if (e.target.closest('input, textarea, [contenteditable]')) return;
+        e.preventDefault();
+        search.focus();
+        search.select();
+      });
+      search.addEventListener('keydown', function (e) { if (e.key === 'Escape') search.blur(); });
       // Expand or collapse every card's Managing notes at once. The label says what
       // the next click does: "expand" while any card is closed, otherwise "collapse".
       var notesButton = document.getElementById('notes');
