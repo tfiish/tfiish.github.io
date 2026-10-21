@@ -3,23 +3,56 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tyler Fisher · Projects</title>
-  <meta name="description" content="Side projects by Tyler Fisher.">
+  <title>tfiish</title>
+  <meta name="description" content="Side projects by tfiish.">
   <style>
     :root {
-      --bg: #fafaf7;
+      --bg: #f4f4f0;
+      --card: #ffffff;
       --fg: #1a1a1a;
       --muted: #6b6b66;
-      --line: #e4e4de;
+      --line: #e2e2dc;
+      --chip: #ecece6;
       --accent: #2554c7;
+      --shadow: 0 1px 2px rgba(0,0,0,.05);
+      --shadow-hover: 0 6px 18px rgba(0,0,0,.09);
     }
+    :root[data-theme="dark"] {
+      --bg: #111111;
+      --card: #1b1b1b;
+      --fg: #ececec;
+      --muted: #9a9a94;
+      --line: #2c2c2c;
+      --chip: #262626;
+      --accent: #7aa2ff;
+      --shadow: 0 1px 2px rgba(0,0,0,.4);
+      --shadow-hover: 0 6px 18px rgba(0,0,0,.5);
+    }
+    :root[data-theme="terminal"] {
+      --bg: #000000;
+      --card: #040a04;
+      --fg: #33ff33;
+      --muted: #1fa81f;
+      --line: #0f3f0f;
+      --chip: #072607;
+      --accent: #7dff7d;
+      --shadow: none;
+      --shadow-hover: 0 0 0 1px var(--accent);
+      --font: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+    :root[data-theme="terminal"] .card { border-radius: 2px; }
+    :root[data-theme="terminal"] .chip { border-radius: 2px; }
     @media (prefers-color-scheme: dark) {
-      :root {
-        --bg: #141414;
+      :root:not([data-theme]) {
+        --bg: #111111;
+        --card: #1b1b1b;
         --fg: #ececec;
         --muted: #9a9a94;
         --line: #2c2c2c;
+        --chip: #262626;
         --accent: #7aa2ff;
+        --shadow: 0 1px 2px rgba(0,0,0,.4);
+        --shadow-hover: 0 6px 18px rgba(0,0,0,.5);
       }
     }
     * { box-sizing: border-box; }
@@ -27,44 +60,125 @@
       margin: 0;
       background: var(--bg);
       color: var(--fg);
-      font: 17px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      font: 16px/1.5 var(--font, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif);
       -webkit-font-smoothing: antialiased;
     }
     main {
-      max-width: 40rem;
+      max-width: 44rem;
       margin: 0 auto;
-      padding: 4rem 1rem 5rem;
+      padding: 3.5rem 1rem 5rem;
     }
-    h1 { font-size: 1.6rem; margin: 0 0 .25rem; }
-    .tagline { color: var(--muted); margin: 0 0 2.5rem; }
-    ul { list-style: none; padding: 0; margin: 0; }
-    li {
-      padding: 1rem 0;
-      border-top: 1px solid var(--line);
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 0 0 1.75rem;
     }
-    li:last-child { border-bottom: 1px solid var(--line); }
-    li a {
-      color: var(--accent);
+    h1 {
+      font-size: 1.5rem;
+      margin: 0;
+      letter-spacing: -.01em;
+    }
+    #theme {
+      font: inherit;
+      font-size: .8rem;
+      color: var(--muted);
+      background: var(--chip);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: .35em .9em;
+      cursor: pointer;
+    }
+    #theme:hover { color: var(--fg); border-color: var(--accent); }
+    :root[data-theme="terminal"] #theme { border-radius: 2px; }
+    .cards {
+      display: grid;
+      gap: 1rem;
+    }
+    .card {
+      position: relative;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 1.1rem 1.25rem 1.2rem;
+      box-shadow: var(--shadow);
+      transition: box-shadow .15s ease, transform .15s ease, border-color .15s ease;
+    }
+    .card:hover, .card:focus-visible {
+      box-shadow: var(--shadow-hover);
+      transform: translateY(-1px);
+      border-color: var(--accent);
+      outline: none;
+    }
+    .card:hover h2 a { text-decoration: underline; }
+    h2 a { color: inherit; text-decoration: none; }
+    h2 a::after { content: ""; position: absolute; inset: 0; }
+    .repo {
+      position: relative;
+      z-index: 1;
+      margin-left: auto;
+      font-size: .78rem;
+      color: var(--muted);
       text-decoration: none;
-      font-weight: 600;
+      border-bottom: 1px solid var(--line);
     }
-    li a:hover { text-decoration: underline; }
-    li p { margin: .2rem 0 0; color: var(--muted); }
-    li .stack {
-      margin-top: .5rem;
+    .repo:hover { color: var(--accent); border-color: var(--accent); }
+    .head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: .4rem .6rem;
+      margin-bottom: .35rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      margin: 0;
+      color: var(--accent);
+    }
+    .chip {
+      font-size: .74rem;
+      line-height: 1;
+      padding: .32em .6em;
+      border-radius: 999px;
+      background: var(--chip);
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    .chip.domain {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      color: var(--fg);
+    }
+    .blurb { margin: 0 0 .6rem; }
+    .stack {
+      margin: 0 0 .75rem;
       font-size: .82rem;
       line-height: 1.5;
       color: var(--muted);
-      opacity: .85;
     }
+    .label {
+      font-size: .7rem;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 0 0 .3rem;
+    }
+    ul.manage {
+      margin: 0;
+      padding-left: 1.1rem;
+      font-size: .88rem;
+      line-height: 1.5;
+    }
+    ul.manage li { margin: .15rem 0; }
+    ul.manage li::marker { color: var(--muted); }
     code {
       font: .92em ui-monospace, SFMono-Regular, Menlo, monospace;
-      background: var(--line);
+      background: var(--chip);
       padding: .05em .3em;
       border-radius: 3px;
     }
     footer {
-      margin-top: 3rem;
+      margin-top: 2.5rem;
       color: var(--muted);
       font-size: .9rem;
     }
@@ -73,41 +187,138 @@
 </head>
 <body>
   <main>
-    <h1>Tyler Fisher</h1>
-    <p class="tagline">Side projects, in no particular order.</p>
+    <header>
+      <h1>tfiish</h1>
+      <!-- Cycles through THEMES below. Add a theme: a :root[data-theme="…"] block above, and its name here. -->
+      <button id="theme" type="button" aria-label="Switch theme">theme</button>
+    </header>
 
-    <!-- To add a project, copy one <li> block. Order is whatever you want it to be. -->
-    <ul>
-      <li>
-        <a href="https://1qrl.app">1QRL</a>
-        <p>Tiny links, big QRs. A URL shortener whose short links encode into low-density QR codes that still scan from across a room.</p>
+    <!-- The title link stretches over its whole card; the repo link sits above it. To add a project, copy a whole <article> block. -->
+    <div class="cards">
+
+      <article class="card">
+        <div class="head">
+          <h2><a class="main" href="https://1qrl.app">1QRL</a></h2>
+          <span class="chip domain">1qrl.app</span>
+          <span class="chip domain">1qrl.cc</span>
+          <span class="chip">Porkbun</span>
+          <span class="chip">Onespot</span>
+          <a class="repo" href="https://github.com/tfiish/1qrl">repo</a>
+        </div>
+        <p class="blurb">Tiny links, big QRs. A URL shortener whose short links encode into low-density QR codes that still scan from across a room.</p>
         <p class="stack">Next.js · React · TypeScript · Tailwind · Supabase (Postgres, auth) · Vercel, with a Vercel cron and pg_cron · ships via <code>npm run deploy</code></p>
-      </li>
-      <li>
-        <a href="https://wholewideworld.app">Whole Wide World</a>
-        <p>A mobile-first web app that uses spaced repetition to teach where every country, state, and province is, on a globe you can spin and zoom.</p>
-        <p class="stack">Vite · React · TypeScript · PWA with a service worker · all data in IndexedDB, no server · d3-geo · ts-fsrs · Cloudflare Pages, built from the <code>release</code> branch · domain at Porkbun</p>
-      </li>
-      <li>
-        <a href="https://unspoiled.xyz">Unspoiled</a>
-        <p>Spoiler-free sports highlights aggregator.</p>
-        <p class="stack">pnpm monorepo · Next.js 15 web app on Vercel · Supabase Postgres · ingest worker runs on GitHub Actions cron, hourly and daily</p>
-      </li>
-      <li>
-        <a href="https://markmadness.vercel.app">Mark Madness</a>
-        <p>The official portal for all things Mark Madness.</p>
-        <p class="stack">Vite · React · TypeScript · Tailwind · shadcn/Radix · Supabase (auth, database, edge functions) · Vercel Hobby plan, so only the repo owner's pushes deploy · started in Lovable</p>
-      </li>
-      <li>
-        <a href="https://github.com/tfiish/storystamper">StoryStamper</a>
-        <p>A native, lightweight Mac app to quickly add Instagram-story-style text blocks to a vertical video.</p>
-        <p class="stack">Swift 6 · SwiftUI · Swift Package, no Xcode project · FFmpeg for export · ad-hoc signed, not notarized · distributed as source on GitHub, built with <code>Scripts/make-app.sh</code></p>
-      </li>
-    </ul>
+        <p class="label">Managing</p>
+        <ul class="manage">
+          <li>A Onespot product. Mail, legal, and routing all go through that entity; the contact address is hi@1qrl.app.</li>
+          <li>Both domains at Porkbun on auto-renew. A lapse kills every short link at once, so confirm auto-renew and the card yearly.</li>
+          <li>Two Supabase projects, staging and production. A daily cron pings both so the free tier doesn't pause them.</li>
+          <li>Auth email goes out through Resend. A weekly DMARC summary lands in hi@.</li>
+          <li>Monthly: Supabase and Vercel usage, Resend quota, Search Console. Every five months: sign in with Google on staging and production so Google doesn't delete the OAuth clients. DMCA agent designation renews every three years.</li>
+        </ul>
+      </article>
+
+      <article class="card">
+        <div class="head">
+          <h2><a class="main" href="https://wholewideworld.app">Whole Wide World</a></h2>
+          <span class="chip domain">wholewideworld.app</span>
+          <span class="chip">Porkbun</span>
+          <a class="repo" href="https://github.com/tfiish/wholewideworld">repo</a>
+        </div>
+        <p class="blurb">A mobile-first web app that uses spaced repetition to teach where every country, state, and province is, on a globe you can spin and zoom.</p>
+        <p class="stack">Vite · React · TypeScript · PWA with a service worker · all data in IndexedDB, no server · d3-geo · ts-fsrs · Cloudflare Pages, built from the <code>release</code> branch</p>
+        <p class="label">Managing</p>
+        <ul class="manage">
+          <li>Own domain at Porkbun, auto-renew on. Check it a few weeks before the yearly renewal.</li>
+          <li>Cloudflare does everything else: Pages builds on every push to <code>release</code>, issues the certificate, redirects www, and runs Email Routing.</li>
+          <li>Mail to hi@wholewideworld.app forwards to the Gmail inbox. Catch-all is off, so any other address is dropped. Send a test mail now and then.</li>
+          <li>No server and no accounts. Reader progress lives in their own browser.</li>
+          <li>Yearly: Natural Earth data and the UN member list, plus a re-read of the Terms and Privacy policy. Push <code>main</code> to the private GitHub repo by hand after each commit; nothing pushes on its own.</li>
+        </ul>
+      </article>
+
+      <article class="card">
+        <div class="head">
+          <h2><a class="main" href="https://unspoiled.xyz">Unspoiled</a></h2>
+          <span class="chip domain">unspoiled.xyz</span>
+          <span class="chip">Porkbun</span>
+          <a class="repo" href="https://github.com/tfiish/unspoiled">repo</a>
+        </div>
+        <p class="blurb">Spoiler-free sports highlights aggregator.</p>
+        <p class="stack">pnpm monorepo · Next.js 15 web app on Vercel · Supabase Postgres · ingest worker on GitHub Actions</p>
+        <p class="label">Managing</p>
+        <ul class="manage">
+          <li>Domain at Porkbun. Hosted on Vercel under the personal account, reading from Supabase.</li>
+          <li>Ingest runs on GitHub Actions: a full daily pass, and an hourly video pass fired by an outside cron service because GitHub's own schedule is unreliable at that cadence.</li>
+          <li>A weekly audit posts findings to a GitHub issue every Monday. A quarterly drift audit, run by Claude Code, posts to a long-lived issue. Read both: a skipped or stuck run looks exactly like a clean one.</li>
+          <li>UptimeRobot watches the site. Quarterly, send a test alert to confirm the monitors and contact still exist.</li>
+          <li>hi@unspoiled.xyz and the suggestions form both deliver through Resend. Monthly, send a test from an outside address and submit the form.</li>
+          <li>PostHog handles analytics, cookieless. Quarterly, confirm the privacy settings the policy promises are still set.</li>
+          <li>A couple of tokens expire yearly. Rotate them together, ahead of time; an expired one degrades quietly rather than failing loudly.</li>
+        </ul>
+      </article>
+
+      <article class="card">
+        <div class="head">
+          <h2><a class="main" href="https://markmadness.vercel.app">Mark Madness</a></h2>
+          <span class="chip domain">markmadness.vercel.app</span>
+          <span class="chip">no custom domain</span>
+          <a class="repo" href="https://github.com/tfiish/markmadness">repo</a>
+        </div>
+        <p class="blurb">The official portal for all things Mark Madness.</p>
+        <p class="stack">Vite · React · TypeScript · Tailwind · shadcn/Radix · Vercel Hobby plan</p>
+        <p class="label">Managing</p>
+        <ul class="manage">
+          <li>Backend is Lovable Cloud, which is Supabase underneath: auth, database, and edge functions. Migrations are managed centrally and never run locally.</li>
+          <li>Vercel Hobby only deploys pushes from the repo owner. After merging someone else's PR, push an empty commit to <code>main</code> to trigger the deploy. Cap is 100 deploys a day, so batch pushes.</li>
+          <li>Backend credentials live in a gitignored <code>.env</code>, never in the repo.</li>
+        </ul>
+      </article>
+
+      <article class="card">
+        <div class="head">
+          <h2><a class="main" href="https://github.com/tfiish/storystamper">StoryStamper</a></h2>
+          <span class="chip">GitHub, public</span>
+          <span class="chip">Mac app</span>
+          <a class="repo" href="https://github.com/tfiish/storystamper">repo</a>
+        </div>
+        <p class="blurb">A native, lightweight Mac app to quickly add Instagram-story-style text blocks to a vertical video.</p>
+        <p class="stack">Swift 6 · SwiftUI · Swift Package, no Xcode project · FFmpeg for export · ad-hoc signed, not notarized · built with <code>Scripts/make-app.sh</code></p>
+        <p class="label">Managing</p>
+        <ul class="manage">
+          <li>Nothing to manage: no hosting, no accounts, no domain, nothing runs on a schedule. It ships as source.</li>
+          <li>Building needs macOS 14 or later and Xcode 16 or the Command Line Tools. Export needs FFmpeg from Homebrew.</li>
+          <li>A build copied to another Mac needs right-click, Open the first time since it isn't notarized.</li>
+        </ul>
+      </article>
+
+    </div>
 
     <footer>
       <a href="https://github.com/tfiish">GitHub</a>
     </footer>
   </main>
+  <script>
+    (function () {
+      var THEMES = ['light', 'dark', 'terminal'];
+      var root = document.documentElement;
+      var button = document.getElementById('theme');
+      var saved = null;
+      try { saved = localStorage.getItem('theme'); } catch (e) {}
+      // With nothing saved the page follows the system, and the first click starts from whichever that is.
+      function current() {
+        if (root.dataset.theme) return root.dataset.theme;
+        return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+      function apply(name) {
+        root.dataset.theme = name;
+        button.textContent = name;
+        try { localStorage.setItem('theme', name); } catch (e) {}
+      }
+      if (THEMES.indexOf(saved) !== -1) apply(saved); else button.textContent = current();
+      button.addEventListener('click', function () {
+        apply(THEMES[(THEMES.indexOf(current()) + 1) % THEMES.length]);
+      });
+    })();
+  </script>
 </body>
 </html>
