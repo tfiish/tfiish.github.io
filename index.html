@@ -70,7 +70,7 @@
     }
     header {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: space-between;
       margin: 0 0 1.75rem;
     }
@@ -78,6 +78,11 @@
       font-size: 1.5rem;
       margin: 0;
       letter-spacing: -.01em;
+    }
+    .sub {
+      margin: .25rem 0 0;
+      font-size: .85rem;
+      color: var(--muted);
     }
     #theme {
       font: inherit;
@@ -221,7 +226,10 @@
 <body>
   <main>
     <header>
-      <h1>tfiish</h1>
+      <div>
+        <h1>tfiish</h1>
+        <p class="sub">side projects · last updated <time id="updated" datetime="2026-10-21">2026-10-21</time></p>
+      </div>
       <!-- Cycles through THEMES below. Add a theme: a :root[data-theme="…"] block above, and its name here. -->
       <button id="theme" type="button" aria-label="Switch theme">theme</button>
     </header>
@@ -250,10 +258,10 @@
           <li>Domain at Porkbun. Hosted on Vercel under the personal account, reading from Supabase.</li>
           <li>Ingest runs on GitHub Actions: a full daily pass, and an hourly video pass fired by an outside cron service because GitHub's own schedule is unreliable at that cadence.</li>
           <li>A weekly audit posts findings to a GitHub issue every Monday. A quarterly drift audit, run by Claude Code, posts to a long-lived issue. Read both: a skipped or stuck run looks exactly like a clean one.</li>
-          <li>UptimeRobot watches the site. Quarterly, send a test alert to confirm the monitors and contact still exist.</li>
-          <li>hi@unspoiled.xyz and the suggestions form both deliver through Resend. Monthly, send a test from an outside address and submit the form.</li>
-          <li>PostHog handles analytics, cookieless. Quarterly, confirm the privacy settings the policy promises are still set.</li>
-          <li>A couple of tokens expire yearly. Rotate them together, ahead of time; an expired one degrades quietly rather than failing loudly.</li>
+          <li>UptimeRobot runs two monitors and emails when either goes down: one polls the site every 5 minutes, so Down means readers can't reach it; the other polls the health endpoint every 45 minutes, so Down means the site is fine but the ingest cron has stopped and the archive isn't growing.</li>
+          <li>Emailing hi@ delivers through Resend, as does the suggestions form.</li>
+          <li>PostHog handles analytics, cookieless.</li>
+          <li>A couple of tokens expire yearly (<code>CLAUDE_CODE_OAUTH_TOKEN</code> for the drift audit, <code>GITHUB_DISPATCH_TOKEN</code> for the hourly trigger). Rotate them together, ahead of time; an expired one degrades quietly rather than failing loudly.</li>
         </ul>
       </article>
 
@@ -268,11 +276,11 @@
         <p class="stack">Vite · React · TypeScript · PWA with a service worker · all data in IndexedDB, no server · d3-geo · ts-fsrs · Cloudflare Pages, built from the <code>release</code> branch</p>
         <p class="label">Managing</p>
         <ul class="manage">
-          <li>Own domain at Porkbun, auto-renew on. Check it a few weeks before the yearly renewal.</li>
+          <li>Own domain at Porkbun, auto-renew on.</li>
           <li>Cloudflare does everything else: Pages builds on every push to <code>release</code>, issues the certificate, redirects www, and runs Email Routing.</li>
-          <li>Mail to hi@wholewideworld.app forwards to the Gmail inbox. Catch-all is off, so any other address is dropped. Send a test mail now and then.</li>
+          <li>Mail to hi@ forwards to the Gmail inbox. Catch-all is off, so any other address is dropped.</li>
           <li>No server and no accounts. Reader progress lives in their own browser.</li>
-          <li>Yearly: Natural Earth data and the UN member list, plus a re-read of the Terms and Privacy policy. Push <code>main</code> to the private GitHub repo by hand after each commit; nothing pushes on its own.</li>
+          <li>Yearly: Natural Earth data and the UN member list.</li>
         </ul>
       </article>
 
@@ -289,11 +297,12 @@
         <p class="stack">Next.js · React · TypeScript · Tailwind · Supabase (Postgres, auth) · Vercel, with a Vercel cron and pg_cron · ships via <code>npm run deploy</code></p>
         <p class="label">Managing</p>
         <ul class="manage">
-          <li>A Onespot product. Mail, legal, and routing all go through that entity; the contact address is hi@1qrl.app.</li>
-          <li>Both domains at Porkbun on auto-renew. A lapse kills every short link at once, so confirm auto-renew and the card yearly.</li>
+          <li>A Onespot product. Mail, legal, and routing all go through that entity; the contact address is hi@ on the domain.</li>
+          <li>Both domains at Porkbun on auto-renew.</li>
           <li>Two Supabase projects, staging and production. A daily cron pings both so the free tier doesn't pause them.</li>
           <li>Auth email goes out through Resend. A weekly DMARC summary lands in hi@.</li>
-          <li>Monthly: Supabase and Vercel usage, Resend quota, Search Console. Every five months: sign in with Google on staging and production so Google doesn't delete the OAuth clients.</li>
+          <li>Monthly: Supabase and Vercel usage, Resend quota, Search Console.</li>
+          <li>Google deletes a "Sign in with Google" client that goes six months unused. Production gets real sign-ins, but staging only sees dev traffic, so sign in with Google on staging every five months or so. If it lapses, staging sign-in fails until the client is restored in Google Cloud.</li>
         </ul>
       </article>
 
@@ -310,7 +319,6 @@
         <ul class="manage">
           <li>Nothing to manage: no hosting, no accounts, no domain, nothing runs on a schedule. It ships as source.</li>
           <li>Building needs macOS 14 or later and Xcode 16 or the Command Line Tools. Export needs FFmpeg from Homebrew.</li>
-          <li>A build copied to another Mac needs right-click, Open the first time since it isn't notarized.</li>
         </ul>
       </article>
 
@@ -326,7 +334,7 @@
         <p class="label">Managing</p>
         <ul class="manage">
           <li>Backend is Lovable Cloud, which is Supabase underneath: auth, database, and edge functions. Migrations are managed centrally and never run locally.</li>
-          <li>Vercel Hobby only deploys pushes from the repo owner. After merging someone else's PR, push an empty commit to <code>main</code> to trigger the deploy. Cap is 100 deploys a day, so batch pushes.</li>
+          <li>Vercel Hobby only deploys pushes from the repo owner.</li>
           <li>Backend credentials live in a gitignored <code>.env</code>, never in the repo.</li>
         </ul>
       </article>
@@ -338,13 +346,25 @@
     </footer>
   </main>
   <script>
+    // The date in the HTML is the fallback. On load, the page asks GitHub for the
+    // repo's latest commit so the date stays true without anyone editing it.
+    fetch('https://api.github.com/repos/tfiish/tfiish.github.io/commits/main', { headers: { Accept: 'application/vnd.github+json' } })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (c) {
+        var iso = c && c.commit && c.commit.committer && c.commit.committer.date;
+        if (!iso) return;
+        var el = document.getElementById('updated');
+        el.dateTime = iso;
+        el.textContent = iso.slice(0, 10);
+      })
+      .catch(function () {});
     (function () {
       var grid = document.querySelector('.cards');
       var cards = Array.prototype.slice.call(grid.children);
       var search = document.getElementById('search');
       var sortButton = document.getElementById('sort');
       var empty = document.getElementById('empty');
-      var SORTS = ['default', 'A\u2013Z'];
+      var SORTS = ['default', 'A\u2013Z', 'Z\u2013A'];
       var sort = 'default';
       try { if (SORTS.indexOf(localStorage.getItem('sort')) !== -1) sort = localStorage.getItem('sort'); } catch (e) {}
 
@@ -355,6 +375,7 @@
         var ordered = cards.slice();
         if (sort !== 'default') {
           ordered.sort(function (a, b) { return title(a).localeCompare(title(b), undefined, { sensitivity: 'base' }); });
+          if (sort === 'Z\u2013A') ordered.reverse();
         }
         var shown = 0;
         ordered.forEach(function (card) {
