@@ -81,12 +81,13 @@
     }
     #theme {
       font: inherit;
-      font-size: .8rem;
+      font-size: 1rem;
+      line-height: 1;
       color: var(--muted);
       background: var(--chip);
       border: 1px solid var(--line);
       border-radius: 999px;
-      padding: .35em .9em;
+      padding: .4em .6em;
       cursor: pointer;
     }
     #theme:hover { color: var(--fg); border-color: var(--accent); }
@@ -112,10 +113,9 @@
     }
     .card:hover h2 a { text-decoration: underline; }
     h2 a { color: inherit; text-decoration: none; }
-    h2 a::after { content: ""; position: absolute; inset: 0; }
+    /* No overlay: the script below opens the card, so text stays selectable. */
+    .card { cursor: pointer; }
     .repo {
-      position: relative;
-      z-index: 1;
       margin-left: auto;
       font-size: .78rem;
       color: var(--muted);
@@ -193,7 +193,7 @@
       <button id="theme" type="button" aria-label="Switch theme">theme</button>
     </header>
 
-    <!-- The title link stretches over its whole card; the repo link sits above it. To add a project, copy a whole <article> block. -->
+    <!-- A click anywhere on a card follows its title link, unless it lands on another link or ends a text selection. To add a project, copy a whole <article> block. -->
     <div class="cards">
 
       <article class="card">
@@ -213,7 +213,7 @@
           <li>Both domains at Porkbun on auto-renew. A lapse kills every short link at once, so confirm auto-renew and the card yearly.</li>
           <li>Two Supabase projects, staging and production. A daily cron pings both so the free tier doesn't pause them.</li>
           <li>Auth email goes out through Resend. A weekly DMARC summary lands in hi@.</li>
-          <li>Monthly: Supabase and Vercel usage, Resend quota, Search Console. Every five months: sign in with Google on staging and production so Google doesn't delete the OAuth clients. DMCA agent designation renews every three years.</li>
+          <li>Monthly: Supabase and Vercel usage, Resend quota, Search Console. Every five months: sign in with Google on staging and production so Google doesn't delete the OAuth clients.</li>
         </ul>
       </article>
 
@@ -298,8 +298,18 @@
     </footer>
   </main>
   <script>
+    document.querySelectorAll('.card').forEach(function (card) {
+      card.addEventListener('click', function (e) {
+        if (e.target.closest('a')) return;
+        if (String(getSelection()).length) return;
+        var href = card.querySelector('h2 a').href;
+        if (e.metaKey || e.ctrlKey) window.open(href); else location.href = href;
+      });
+    });
     (function () {
       var THEMES = ['light', 'dark', 'terminal'];
+      var ICONS = { light: '\u2600\uFE0F', dark: '\uD83C\uDF19', terminal: '\uD83D\uDCBB' };
+      function show(name) { button.textContent = ICONS[name]; button.setAttribute('aria-label', 'Switch theme (now ' + name + ')'); }
       var root = document.documentElement;
       var button = document.getElementById('theme');
       var saved = null;
@@ -311,10 +321,10 @@
       }
       function apply(name) {
         root.dataset.theme = name;
-        button.textContent = name;
+        show(name);
         try { localStorage.setItem('theme', name); } catch (e) {}
       }
-      if (THEMES.indexOf(saved) !== -1) apply(saved); else button.textContent = current();
+      if (THEMES.indexOf(saved) !== -1) apply(saved); else show(current());
       button.addEventListener('click', function () {
         apply(THEMES[(THEMES.indexOf(current()) + 1) % THEMES.length]);
       });
