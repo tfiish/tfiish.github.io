@@ -42,6 +42,23 @@
     }
     :root[data-theme="terminal"] .card { border-radius: 2px; }
     :root[data-theme="terminal"] .chip { border-radius: 2px; }
+    :root[data-theme="arcade"] {
+      --bg: #120f22;
+      --card: #1a1532;
+      --fg: #f2eefc;
+      --muted: #a79fc6;
+      --line: #2d2654;
+      --chip: #1c1738;
+      --accent: #c4ff3d;
+      --ice: #7df9ff;
+      --pink: #ff6b8a;
+      --land: #9d8fd6;
+      --shadow: 0 1px 2px rgba(0,0,0,.5);
+      --shadow-hover: 0 0 0 1px var(--accent), 0 6px 18px rgba(196,255,61,.12);
+    }
+    :root[data-theme="arcade"] .chip.domain { color: var(--ice); }
+    :root[data-theme="arcade"] .repo:hover { color: var(--pink); border-color: var(--pink); }
+    :root[data-theme="arcade"] ul.manage li::marker { color: var(--land); }
     @media (prefers-color-scheme: dark) {
       :root:not([data-theme]) {
         --bg: #111111;
@@ -256,11 +273,12 @@
         <p class="label">Managing</p>
         <ul class="manage">
           <li>Domain at <strong>Porkbun</strong>. Hosted on <strong>Vercel</strong> under its own personal account tied to its gmail address, reading from <strong>Supabase</strong>.</li>
+          <li>Highlights come from the <strong>YouTube Data API</strong> and play through YouTube embeds; a lapsed or over-quota API key means no new videos. Reddit game-thread links come from <strong>Arctic Shift</strong>, a one-person Reddit archive with no uptime guarantee, and fail quietly when it's down.</li>
           <li>Ingest runs on <strong>GitHub Actions</strong>: a full daily pass, and an hourly video pass fired by an outside cron service because GitHub's own schedule is unreliable at that cadence.</li>
           <li>A weekly audit posts findings to a <strong>GitHub</strong> issue every Monday. A quarterly drift audit, run by <strong>Claude Code</strong>, posts to a long-lived issue.</li>
           <li><strong>UptimeRobot</strong> runs two monitors and emails when either goes down: one polls the site every 5 minutes, so Down means readers can't reach it; the other polls the health endpoint every 45 minutes, so Down means the site is fine but the ingest cron has stopped and the archive isn't growing.</li>
-          <li>Emailing hi@ delivers through <strong>Resend</strong>, as does the suggestions form.</li>
-          <li><strong>PostHog</strong> handles analytics (cookieless).</li>
+          <li>The hi@ inbox is <strong>Zoho Mail</strong>, which also receives the suggestions form. Outbound mail, including the form, delivers through <strong>Resend</strong>.</li>
+          <li><strong>PostHog</strong> (EU cloud) handles analytics (cookieless) and error tracking.</li>
           <li>A couple of tokens expire yearly (<code>CLAUDE_CODE_OAUTH_TOKEN</code> for the drift audit, <code>GITHUB_DISPATCH_TOKEN</code> for the hourly trigger). Rotate them together, ahead of time; an expired one degrades quietly rather than failing loudly.</li>
         </ul>
       </article>
@@ -276,8 +294,8 @@
         <p class="stack">Vite · React · TypeScript · PWA with a service worker · all data in IndexedDB, no server · d3-geo · ts-fsrs · Cloudflare Pages, built from the <code>release</code> branch</p>
         <p class="label">Managing</p>
         <ul class="manage">
-          <li>Own domain at <strong>Porkbun</strong>, auto-renew on.</li>
-          <li><strong>Cloudflare</strong> does everything else: Pages builds on every push to <code>release</code>, issues the certificate, redirects www, and runs Email Routing.</li>
+          <li>Own domain at <strong>Porkbun</strong>, auto-renew on. DNS lives at <strong>Cloudflare</strong>, not Porkbun.</li>
+          <li><strong>Cloudflare</strong> does everything else: Pages builds on every push to <code>release</code> on <strong>GitHub</strong>, so the repo is part of the deploy path; it also issues the certificate, redirects www, and runs Email Routing.</li>
           <li>Mail to hi@ forwards to the <strong>Gmail</strong> inbox via <strong>Cloudflare Email Routing</strong>. Catch-all is off, so any other address is dropped.</li>
           <li>No server and no accounts. Reader progress lives in their own browser.</li>
           <li>Yearly: refresh the <strong>Natural Earth</strong> data and the <strong>UN</strong> member list.</li>
@@ -291,7 +309,7 @@
           <span class="chip domain">1qrl.cc</span>
           <span class="chip">Porkbun</span>
           <span class="chip">Onespot</span>
-          <a class="repo" href="https://github.com/tfiish/1qrl">repo</a>
+          <a class="repo" href="https://github.com/onespotapps/1qrl">repo</a>
         </div>
         <p class="blurb">Tiny links, big QRs. A URL shortener whose short links encode into low-density QR codes that still scan from across a room.</p>
         <p class="stack">Next.js · React · TypeScript · Tailwind · Supabase (Postgres, auth) · Vercel, with a Vercel cron and pg_cron · ships via <code>npm run deploy</code></p>
@@ -300,7 +318,8 @@
           <li>A <strong>Onespot</strong> product. Mail, legal, and routing all go through that entity; the contact address is hi@ on the domain.</li>
           <li>Both domains at <strong>Porkbun</strong> on auto-renew.</li>
           <li>Two <strong>Supabase</strong> projects, staging and production. A daily cron pings both so the free tier doesn't pause them.</li>
-          <li>Auth email goes out through <strong>Resend</strong>. A weekly DMARC summary lands in hi@.</li>
+          <li>Anonymous link creation on the home page is gated by <strong>Cloudflare Turnstile</strong>.</li>
+          <li>Auth email goes out through <strong>Resend</strong>. A weekly DMARC summary from <strong>Postmark</strong> lands in hi@.</li>
           <li>Monthly: <strong>Supabase</strong> and <strong>Vercel</strong> usage, <strong>Resend</strong> quota, <strong>Search Console</strong>.</li>
           <li><strong>Google</strong> deletes a "Sign in with Google" client that goes six months unused. Production gets real sign-ins, but staging only sees dev traffic, so sign in with Google on staging every five months or so. If it lapses, staging sign-in fails until the client is restored in <strong>Google Cloud</strong>.</li>
         </ul>
@@ -317,8 +336,8 @@
         <p class="stack">Swift 6 · SwiftUI · Swift Package, no Xcode project · FFmpeg for export · ad-hoc signed, not notarized · built with <code>Scripts/make-app.sh</code></p>
         <p class="label">Managing</p>
         <ul class="manage">
-          <li>Nothing to manage: no hosting, no accounts, no domain, nothing runs on a schedule. It ships as source.</li>
-          <li>Building needs macOS 14 or later and <strong>Xcode</strong> 16 or the Command Line Tools. Export needs <strong>FFmpeg</strong> from <strong>Homebrew</strong>.</li>
+          <li>Nothing to manage: no hosting, no domain, nothing runs on a schedule. It ships as source and tagged <strong>GitHub</strong> Releases, published by hand with the <code>gh</code> CLI.</li>
+          <li>Building needs macOS 14 or later and <strong>Xcode</strong> 16 or the Command Line Tools. Export needs <strong>FFmpeg</strong>, from <strong>Homebrew</strong> by default or bundled into the app; fast export needs a build with Apple's VideoToolbox encoder.</li>
         </ul>
       </article>
 
@@ -336,6 +355,20 @@
           <li>Backend is <strong>Lovable Cloud</strong>, which is <strong>Supabase</strong> underneath: auth, database, and edge functions. Migrations are managed centrally and never run locally.</li>
           <li><strong>Vercel</strong> Hobby only deploys pushes from the repo owner.</li>
           <li>Backend credentials live in a gitignored <code>.env</code>, never in the repo.</li>
+        </ul>
+      </article>
+
+      <article class="card">
+        <div class="head">
+          <h2><a class="main" href="https://tfiish.github.io">tfiish</a></h2>
+          <span class="chip domain">tfiish.github.io</span>
+          <a class="repo" href="https://github.com/tfiish/tfiish.github.io">repo</a>
+        </div>
+        <p class="blurb">This page.</p>
+        <p class="stack">One HTML file · GitHub Pages</p>
+        <p class="label">Managing</p>
+        <ul class="manage">
+          <li>Nothing. Push to <code>main</code> and <strong>GitHub Pages</strong> redeploys.</li>
         </ul>
       </article>
 
@@ -405,8 +438,8 @@
       });
     });
     (function () {
-      var THEMES = ['light', 'dark', 'terminal'];
-      var ICONS = { light: '\u2600\uFE0F', dark: '\uD83C\uDF19', terminal: '\uD83D\uDCBB' };
+      var THEMES = ['light', 'dark', 'terminal', 'arcade'];
+      var ICONS = { light: '\u2600\uFE0F', dark: '\uD83C\uDF19', terminal: '\uD83D\uDCBB', arcade: '\uD83D\uDD79\uFE0F' };
       function show(name) { button.textContent = ICONS[name]; button.setAttribute('aria-label', 'Switch theme (now ' + name + ')'); }
       var root = document.documentElement;
       var button = document.getElementById('theme');
