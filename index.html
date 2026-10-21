@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="arcade">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -59,19 +59,6 @@
     :root[data-theme="arcade"] .chip.domain { color: var(--ice); }
     :root[data-theme="arcade"] .repo:hover { color: var(--pink); border-color: var(--pink); }
     :root[data-theme="arcade"] ul.manage li::marker { color: var(--land); }
-    @media (prefers-color-scheme: dark) {
-      :root:not([data-theme]) {
-        --bg: #111111;
-        --card: #1b1b1b;
-        --fg: #ececec;
-        --muted: #9a9a94;
-        --line: #2c2c2c;
-        --chip: #262626;
-        --accent: #7aa2ff;
-        --shadow: 0 1px 2px rgba(0,0,0,.4);
-        --shadow-hover: 0 6px 18px rgba(0,0,0,.5);
-      }
-    }
     * { box-sizing: border-box; }
     body {
       margin: 0;
@@ -81,7 +68,7 @@
       -webkit-font-smoothing: antialiased;
     }
     main {
-      max-width: 44rem;
+      max-width: 64rem;
       margin: 0 auto;
       padding: 3.5rem 1rem 5rem;
     }
@@ -218,6 +205,16 @@
       color: var(--muted);
       margin: 0 0 .3rem;
     }
+    summary.label {
+      cursor: pointer;
+      width: max-content;
+      list-style: none;
+      user-select: none;
+    }
+    summary.label::-webkit-details-marker { display: none; }
+    summary.label::before { content: "\25B8"; display: inline-block; width: 1em; }
+    details[open] > summary.label::before { content: "\25BE"; }
+    summary.label:hover { color: var(--fg); }
     ul.manage {
       margin: 0;
       padding-left: 1.1rem;
@@ -270,17 +267,19 @@
         </div>
         <p class="blurb">Spoiler-free sports highlights aggregator.</p>
         <p class="stack">pnpm monorepo · Next.js 15 web app on Vercel · Supabase Postgres · ingest worker on GitHub Actions</p>
-        <p class="label">Managing</p>
+        <details class="managing">
+        <summary class="label">Managing</summary>
         <ul class="manage">
-          <li>Domain at <strong>Porkbun</strong>. Hosted on <strong>Vercel</strong> under its own personal account tied to its gmail address, reading from <strong>Supabase</strong>.</li>
-          <li>Highlights come from the <strong>YouTube Data API</strong> and play through YouTube embeds; a lapsed or over-quota API key means no new videos. Reddit game-thread links come from <strong>Arctic Shift</strong>, a one-person Reddit archive with no uptime guarantee, and fail quietly when it's down.</li>
+          <li>Domain at <strong>Porkbun</strong>. Hosted on <strong>Vercel</strong> under its own account, reading from <strong>Supabase</strong>.</li>
+          <li>Highlights come from the <strong>YouTube Data API</strong> and play through YouTube embeds; a lapsed or over-quota API key means no new videos. Reddit game-thread links come from <strong>Arctic Shift</strong>, a one-person Reddit archive with no uptime guarantee.</li>
           <li>Ingest runs on <strong>GitHub Actions</strong>: a full daily pass, and an hourly video pass fired by an outside cron service because GitHub's own schedule is unreliable at that cadence.</li>
           <li>A weekly audit posts findings to a <strong>GitHub</strong> issue every Monday. A quarterly drift audit, run by <strong>Claude Code</strong>, posts to a long-lived issue.</li>
-          <li><strong>UptimeRobot</strong> runs two monitors and emails when either goes down: one polls the site every 5 minutes, so Down means readers can't reach it; the other polls the health endpoint every 45 minutes, so Down means the site is fine but the ingest cron has stopped and the archive isn't growing.</li>
+          <li><strong>UptimeRobot</strong> runs two monitors and emails when either goes down: one polls the site, so Down means readers can't reach it; the other polls the health endpoint, so Down means the site is fine but ingest has stopped.</li>
           <li>The hi@ inbox is <strong>Zoho Mail</strong>, which also receives the suggestions form. Outbound mail, including the form, delivers through <strong>Resend</strong>.</li>
           <li><strong>PostHog</strong> (EU cloud) handles analytics (cookieless) and error tracking.</li>
-          <li>A couple of tokens expire yearly (<code>CLAUDE_CODE_OAUTH_TOKEN</code> for the drift audit, <code>GITHUB_DISPATCH_TOKEN</code> for the hourly trigger). Rotate them together, ahead of time; an expired one degrades quietly rather than failing loudly.</li>
+          <li>Two tokens expire yearly: an <strong>Anthropic</strong> token for the drift audit and a <strong>GitHub</strong> personal access token for the hourly trigger. Rotate them together, ahead of time.</li>
         </ul>
+        </details>
       </article>
 
       <article class="card">
@@ -292,7 +291,8 @@
         </div>
         <p class="blurb">A mobile-first web app that uses spaced repetition to teach where every country, state, and province is, on a globe you can spin and zoom.</p>
         <p class="stack">Vite · React · TypeScript · PWA with a service worker · all data in IndexedDB, no server · d3-geo · ts-fsrs · Cloudflare Pages, built from the <code>release</code> branch</p>
-        <p class="label">Managing</p>
+        <details class="managing">
+        <summary class="label">Managing</summary>
         <ul class="manage">
           <li>Own domain at <strong>Porkbun</strong>, auto-renew on. DNS lives at <strong>Cloudflare</strong>, not Porkbun.</li>
           <li><strong>Cloudflare</strong> does everything else: Pages builds on every push to <code>release</code> on <strong>GitHub</strong>, so the repo is part of the deploy path; it also issues the certificate, redirects www, and runs Email Routing.</li>
@@ -300,6 +300,7 @@
           <li>No server and no accounts. Reader progress lives in their own browser.</li>
           <li>Yearly: refresh the <strong>Natural Earth</strong> data and the <strong>UN</strong> member list.</li>
         </ul>
+        </details>
       </article>
 
       <article class="card">
@@ -313,7 +314,8 @@
         </div>
         <p class="blurb">Tiny links, big QRs. A URL shortener whose short links encode into low-density QR codes that still scan from across a room.</p>
         <p class="stack">Next.js · React · TypeScript · Tailwind · Supabase (Postgres, auth) · Vercel, with a Vercel cron and pg_cron · ships via <code>npm run deploy</code></p>
-        <p class="label">Managing</p>
+        <details class="managing">
+        <summary class="label">Managing</summary>
         <ul class="manage">
           <li>A <strong>Onespot</strong> product. Mail, legal, and routing all go through that entity; the contact address is hi@ on the domain.</li>
           <li>Both domains at <strong>Porkbun</strong> on auto-renew.</li>
@@ -321,8 +323,9 @@
           <li>Anonymous link creation on the home page is gated by <strong>Cloudflare Turnstile</strong>.</li>
           <li>Auth email goes out through <strong>Resend</strong>. A weekly DMARC summary from <strong>Postmark</strong> lands in hi@.</li>
           <li>Monthly: <strong>Supabase</strong> and <strong>Vercel</strong> usage, <strong>Resend</strong> quota, <strong>Search Console</strong>.</li>
-          <li><strong>Google</strong> deletes a "Sign in with Google" client that goes six months unused. Production gets real sign-ins, but staging only sees dev traffic, so sign in with Google on staging every five months or so. If it lapses, staging sign-in fails until the client is restored in <strong>Google Cloud</strong>.</li>
+          <li>Sign in with <strong>Google</strong> on staging every five months or so, so Google doesn't retire the unused OAuth client.</li>
         </ul>
+        </details>
       </article>
 
       <article class="card">
@@ -334,11 +337,13 @@
         </div>
         <p class="blurb">A native, lightweight Mac app to quickly add Instagram-story-style text blocks to a vertical video.</p>
         <p class="stack">Swift 6 · SwiftUI · Swift Package, no Xcode project · FFmpeg for export · ad-hoc signed, not notarized · built with <code>Scripts/make-app.sh</code></p>
-        <p class="label">Managing</p>
+        <details class="managing">
+        <summary class="label">Managing</summary>
         <ul class="manage">
           <li>Nothing to manage: no hosting, no domain, nothing runs on a schedule. It ships as source and tagged <strong>GitHub</strong> Releases, published by hand with the <code>gh</code> CLI.</li>
           <li>Building needs macOS 14 or later and <strong>Xcode</strong> 16 or the Command Line Tools. Export needs <strong>FFmpeg</strong>, from <strong>Homebrew</strong> by default or bundled into the app; fast export needs a build with Apple's VideoToolbox encoder.</li>
         </ul>
+        </details>
       </article>
 
       <article class="card">
@@ -350,12 +355,14 @@
         </div>
         <p class="blurb">The official portal for all things Mark Madness (private for competitors only).</p>
         <p class="stack">Vite · React · TypeScript · Tailwind · shadcn/Radix · Vercel Hobby plan</p>
-        <p class="label">Managing</p>
+        <details class="managing">
+        <summary class="label">Managing</summary>
         <ul class="manage">
           <li>Backend is <strong>Lovable Cloud</strong>, which is <strong>Supabase</strong> underneath: auth, database, and edge functions. Migrations are managed centrally and never run locally.</li>
           <li><strong>Vercel</strong> Hobby only deploys pushes from the repo owner.</li>
           <li>Backend credentials live in a gitignored <code>.env</code>, never in the repo.</li>
         </ul>
+        </details>
       </article>
 
       <article class="card">
@@ -366,10 +373,12 @@
         </div>
         <p class="blurb">This page.</p>
         <p class="stack">One HTML file · GitHub Pages</p>
-        <p class="label">Managing</p>
+        <details class="managing">
+        <summary class="label">Managing</summary>
         <ul class="manage">
           <li>Nothing. Push to <code>main</code> and <strong>GitHub Pages</strong> redeploys.</li>
         </ul>
+        </details>
       </article>
 
     </div>
@@ -431,7 +440,7 @@
     })();
     document.querySelectorAll('.card').forEach(function (card) {
       card.addEventListener('click', function (e) {
-        if (e.target.closest('a')) return;
+        if (e.target.closest('a, summary')) return;
         if (String(getSelection()).length) return;
         var href = card.querySelector('h2 a').href;
         if (e.metaKey || e.ctrlKey) window.open(href); else location.href = href;
@@ -446,10 +455,7 @@
       var saved = null;
       try { saved = localStorage.getItem('theme'); } catch (e) {}
       // With nothing saved the page follows the system, and the first click starts from whichever that is.
-      function current() {
-        if (root.dataset.theme) return root.dataset.theme;
-        return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-      }
+      function current() { return root.dataset.theme || 'arcade'; }
       function apply(name) {
         root.dataset.theme = name;
         show(name);
