@@ -68,7 +68,7 @@
       -webkit-font-smoothing: antialiased;
     }
     main {
-      max-width: 64rem;
+      max-width: 54rem;
       margin: 0 auto;
       padding: 3.5rem 1rem 5rem;
     }
@@ -119,7 +119,8 @@
     }
     #search:focus { outline: none; border-color: var(--accent); }
     #search::placeholder { color: var(--muted); }
-    #sort {
+    #sort,
+    #notes {
       font: inherit;
       font-size: .85rem;
       color: var(--muted);
@@ -130,9 +131,10 @@
       cursor: pointer;
       white-space: nowrap;
     }
-    #sort:hover { color: var(--fg); border-color: var(--accent); }
+    #sort:hover, #notes:hover { color: var(--fg); border-color: var(--accent); }
     :root[data-theme="terminal"] #search,
-    :root[data-theme="terminal"] #sort { border-radius: 2px; }
+    :root[data-theme="terminal"] #sort,
+    :root[data-theme="terminal"] #notes { border-radius: 2px; }
     .empty { color: var(--muted); margin: 0 0 1rem; }
     .cards {
       display: grid;
@@ -251,6 +253,7 @@
     <div class="toolbar">
       <input id="search" type="search" placeholder="Search projects" aria-label="Search projects" autocomplete="off">
       <button id="sort" type="button" aria-label="Change sort order">default</button>
+      <button id="notes" type="button" aria-label="Expand or collapse all managing notes">expand</button>
     </div>
     <p id="empty" class="empty" hidden>No projects match.</p>
 
@@ -431,6 +434,22 @@
       }
 
       search.addEventListener('input', render);
+      // Expand or collapse every card's Managing notes at once. The label says what
+      // the next click does: "expand" while any card is closed, otherwise "collapse".
+      var notesButton = document.getElementById('notes');
+      var details = Array.prototype.slice.call(document.querySelectorAll('details.managing'));
+      function syncNotes() {
+        var anyClosed = details.some(function (d) { return !d.open; });
+        notesButton.textContent = anyClosed ? 'expand' : 'collapse';
+      }
+      notesButton.addEventListener('click', function () {
+        var open = details.some(function (d) { return !d.open; });
+        details.forEach(function (d) { d.open = open; });
+        syncNotes();
+      });
+      details.forEach(function (d) { d.addEventListener('toggle', syncNotes); });
+      syncNotes();
+
       sortButton.addEventListener('click', function () {
         sort = SORTS[(SORTS.indexOf(sort) + 1) % SORTS.length];
         try { localStorage.setItem('sort', sort); } catch (e) {}
