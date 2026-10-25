@@ -306,6 +306,7 @@
           <li>Own domain at <strong>Porkbun</strong>, auto-renew on. DNS lives at <strong>Cloudflare</strong>, not Porkbun.</li>
           <li><strong>Cloudflare</strong> does everything else: Pages builds on every push to <code>release</code> on <strong>GitHub</strong>, so the repo is part of the deploy path; it also issues the certificate, redirects www, and runs Email Routing.</li>
           <li>Mail to hi@ forwards to the <strong>Gmail</strong> inbox via <strong>Cloudflare Email Routing</strong>. Catch-all is off, so any other address is dropped.</li>
+          <li><strong>PostHog</strong> (EU cloud) handles analytics (cookieless) and error tracking.</li>
           <li>No server and no accounts. Reader progress lives in their own browser.</li>
           <li>Yearly: refresh the <strong>Natural Earth</strong> data and the <strong>UN</strong> member list.</li>
         </ul>
