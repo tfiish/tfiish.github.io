@@ -121,7 +121,7 @@
     #search:focus { outline: none; border-color: var(--accent); }
     #search::placeholder { color: var(--muted); }
     #sort,
-    #notes {
+    #expand {
       font: inherit;
       font-size: .85rem;
       color: var(--muted);
@@ -132,10 +132,10 @@
       cursor: pointer;
       white-space: nowrap;
     }
-    #sort:hover, #notes:hover { color: var(--fg); border-color: var(--accent); }
+    #sort:hover, #expand:hover { color: var(--fg); border-color: var(--accent); }
     :root[data-theme="terminal"] #search,
     :root[data-theme="terminal"] #sort,
-    :root[data-theme="terminal"] #notes { border-radius: 2px; }
+    :root[data-theme="terminal"] #expand { border-radius: 2px; }
     .empty { color: var(--muted); margin: 0 0 1rem; }
     .cards {
       display: grid;
@@ -214,9 +214,10 @@
       line-height: 1.5;
       color: var(--muted);
     }
-    /* Screenshots are 16:10; one of another shape is cropped to fit, keeping its top.
-       Two or more in a card make a carousel: the strip scrolls sideways (swipe, or a
-       trackpad), and the script below adds arrows and dots. */
+    /* Screenshots are 16:10 and at most 26rem wide; one of another shape is cropped to
+       fit, keeping its top. Two or more in a card make a carousel: the strip scrolls
+       sideways (swipe, or a trackpad), and the script below adds arrows and dots. */
+    .shots, .carousel, .dots { max-width: 26rem; }
     .shots {
       display: flex;
       overflow-x: auto;
@@ -327,7 +328,7 @@
     <div class="toolbar">
       <input id="search" type="search" placeholder="Search projects" aria-label="Search projects" autocomplete="off">
       <button id="sort" type="button" aria-label="Change sort order">&#8597;&#65039;</button>
-      <button id="notes" type="button" aria-label="Expand or collapse all managing notes">expand</button>
+      <button id="expand" type="button" aria-label="Expand or collapse all cards">collapse</button>
     </div>
     <p id="empty" class="empty" hidden>No projects match.</p>
 
@@ -379,7 +380,9 @@
         <div class="body">
           <p class="blurb">A mobile-first web app that uses spaced repetition to teach where every country, state, and province is, on a globe you can spin and zoom.</p>
           <div class="shots">
-            <img src="img/wholewideworld.webp" width="1600" height="1000" alt="Whole Wide World's home screen: the globe colored by progress, and the day's due count" loading="lazy">
+            <img src="img/wholewideworld.webp" width="1600" height="1000" alt="Whole Wide World's home screen in its light theme, with the globe and the current deck" loading="lazy">
+            <img src="img/wholewideworld-decks.webp" width="1600" height="1000" alt="Whole Wide World's Decks list, with progress and what's due" loading="lazy">
+            <img src="img/wholewideworld-locate.webp" width="1600" height="1000" alt="A Locate question in Whole Wide World, with a dotted line from a missed guess to the answer" loading="lazy">
           </div>
           <p class="stack">Vite · React · TypeScript · PWA with a service worker · all data in IndexedDB, no server · d3-geo · ts-fsrs · Cloudflare Pages, built from the <code>release</code> branch</p>
           <details class="managing">
@@ -436,7 +439,7 @@
         <div class="body">
           <p class="blurb">A native, lightweight Mac app to quickly add Instagram-story-style text blocks to a vertical video.</p>
           <div class="shots">
-            <img src="img/storystamper.webp" width="1600" height="1000" alt="StoryStamper's editor window" loading="lazy">
+            <img src="img/storystamper.webp" width="1600" height="1000" alt="StoryStamper's editor, with a video loaded and a text block on it" loading="lazy">
           </div>
           <p class="stack">Swift 6 · SwiftUI · Swift Package, no Xcode project · FFmpeg for export · ad-hoc signed, not notarized · built with <code>Scripts/make-app.sh</code></p>
           <details class="managing">
@@ -553,25 +556,20 @@
         search.select();
       });
       search.addEventListener('keydown', function (e) { if (e.key === 'Escape') search.blur(); });
-      // Expand or collapse every card's Managing notes at once. The label says what
-      // the next click does: "expand" while any notes are closed, otherwise "collapse".
-      // Expanding also opens any collapsed card, so the notes show.
-      var notesButton = document.getElementById('notes');
-      var details = Array.prototype.slice.call(document.querySelectorAll('details.managing'));
-      function syncNotes() {
-        var anyClosed = details.some(function (d) { return !d.open; });
-        notesButton.textContent = anyClosed ? 'expand' : 'collapse';
+      // Expand or collapse every card at once. The label says what the next click
+      // does: "expand" while any card is collapsed, otherwise "collapse".
+      var expandButton = document.getElementById('expand');
+      function syncExpand() {
+        var anyClosed = cards.some(function (c) { return !c.open; });
+        expandButton.textContent = anyClosed ? 'expand' : 'collapse';
       }
-      notesButton.addEventListener('click', function () {
-        var open = details.some(function (d) { return !d.open; });
-        details.forEach(function (d) {
-          d.open = open;
-          if (open) d.closest('.card').open = true;
-        });
-        syncNotes();
+      expandButton.addEventListener('click', function () {
+        var open = cards.some(function (c) { return !c.open; });
+        cards.forEach(function (c) { c.open = open; });
+        syncExpand();
       });
-      details.forEach(function (d) { d.addEventListener('toggle', syncNotes); });
-      syncNotes();
+      cards.forEach(function (c) { c.addEventListener('toggle', syncExpand); });
+      syncExpand();
 
       sortButton.addEventListener('click', function () {
         sort = SORTS[(SORTS.indexOf(sort) + 1) % SORTS.length];
