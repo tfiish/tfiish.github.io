@@ -146,7 +146,6 @@
       background: var(--card);
       border: 1px solid var(--line);
       border-radius: 12px;
-      padding: 1.1rem 1.25rem 1.2rem;
       box-shadow: var(--shadow);
       transition: box-shadow .15s ease, transform .15s ease, border-color .15s ease;
     }
@@ -156,7 +155,9 @@
       border-color: var(--accent);
       outline: none;
     }
-    .card:hover h2 a { text-decoration: underline; }
+    /* Only a click on the body follows the title link (the title line collapses the
+       card), so only hovering the body underlines it. */
+    h2 a:hover, .card:has(.body:hover) h2 a { text-decoration: underline; }
     h2 a { color: inherit; text-decoration: none; }
     /* No overlay: the script below opens the card, so text stays selectable. */
     .card { cursor: pointer; }
@@ -178,8 +179,16 @@
       flex-wrap: wrap;
       align-items: baseline;
       gap: .4rem .6rem;
-      margin-bottom: .35rem;
+      padding: 1.1rem 1.25rem 1.2rem;
+      list-style: none;
+      cursor: pointer;
     }
+    .card[open] > .head { padding-bottom: .35rem; }
+    .head::-webkit-details-marker { display: none; }
+    .head::before { content: "\25B8"; width: .7em; margin-right: -.3rem; font-size: .8rem; color: var(--muted); }
+    .card[open] > .head::before { content: "\25BE"; }
+    .head:hover::before { color: var(--fg); }
+    .body { padding: 0 1.25rem 1.2rem; }
     h2 {
       font-size: 1.1rem;
       margin: 0;
@@ -205,6 +214,65 @@
       line-height: 1.5;
       color: var(--muted);
     }
+    /* Screenshots are 16:10; one of another shape is cropped to fit, keeping its top.
+       Two or more in a card make a carousel: the strip scrolls sideways (swipe, or a
+       trackpad), and the script below adds arrows and dots. */
+    .shots {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      scrollbar-width: none;
+      margin: 0 0 .75rem;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--chip);
+    }
+    .shots::-webkit-scrollbar { display: none; }
+    .shots img {
+      flex: 0 0 100%;
+      display: block;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 16 / 10;
+      object-fit: cover;
+      object-position: top;
+      scroll-snap-align: start;
+    }
+    .carousel { position: relative; margin: 0 0 .4rem; }
+    .carousel .shots { margin: 0; }
+    .step {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      display: grid;
+      place-items: center;
+      width: 2rem;
+      height: 2rem;
+      padding: 0 0 .1rem;
+      font: inherit;
+      font-size: 1.25rem;
+      line-height: 1;
+      color: var(--fg);
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity .15s ease;
+    }
+    .step.prev { left: .6rem; }
+    .step.next { right: .6rem; }
+    .carousel:hover .step, .step:focus-visible { opacity: .92; }
+    .step:hover { color: var(--accent); border-color: var(--accent); }
+    @media (hover: none) { .step { display: none; } }
+    .dots { display: flex; justify-content: center; margin: 0 0 .45rem; }
+    .dots button { width: 1.2rem; height: 1.2rem; padding: 0; border: 0; background: none; cursor: pointer; }
+    .dots button::before { content: ""; display: block; width: .4rem; height: .4rem; margin: auto; border-radius: 999px; background: var(--muted); opacity: .45; }
+    .dots button[aria-current="true"]::before { background: var(--accent); opacity: 1; }
+    @media (prefers-reduced-motion: reduce) { .shots { scroll-behavior: auto; } }
+    :root[data-theme="terminal"] .shots, :root[data-theme="terminal"] .step { border-radius: 2px; }
+    :root[data-theme="terminal"] .shots img { filter: grayscale(1) sepia(1) hue-rotate(70deg) saturate(2.5) brightness(.85); }
     .label {
       font-size: .7rem;
       font-weight: 600;
@@ -263,133 +331,168 @@
     </div>
     <p id="empty" class="empty" hidden>No projects match.</p>
 
-    <!-- A click anywhere on a card follows its title link, unless it lands on another link or ends a text selection.
-         Document order here is the default sort order. To add a project, copy a whole <article> block into place. -->
+    <!-- A click on a card's title line collapses the card. A click on its body follows the title link, unless it lands on
+         another link or button, or ends a text selection. Document order here is the default sort order. To add a project,
+         copy a whole <details class="card"> block into place. Screenshots go in img/ at 1600×1000; more than one in a
+         card's .shots makes a carousel. -->
     <div class="cards">
 
-      <article class="card">
-        <div class="head">
+      <details class="card" open>
+        <summary class="head">
           <h2><a class="main" href="https://unspoiled.xyz">Unspoiled</a></h2>
           <span class="chip domain">unspoiled.xyz</span>
           <span class="chip">Porkbun</span>
           <a class="repo" href="https://github.com/tfiish/unspoiled" aria-label="Repository" title="Repository">&lt;/&gt;</a>
+        </summary>
+        <div class="body">
+          <p class="blurb">Spoiler-free sports highlights aggregator.</p>
+          <div class="shots">
+            <img src="img/unspoiled.webp" width="1600" height="1000" alt="Unspoiled's home page, with games by date and league" loading="lazy">
+            <img src="img/unspoiled-calendar.webp" width="1600" height="1000" alt="Unspoiled's calendar for October 2026" loading="lazy">
+            <img src="img/unspoiled-teams.webp" width="1600" height="1000" alt="Unspoiled's team list, with favorites first" loading="lazy">
+            <img src="img/unspoiled-what-to-show.webp" width="1600" height="1000" alt="Unspoiled's What to show panel, for choosing leagues and tournaments" loading="lazy">
+          </div>
+          <p class="stack">pnpm monorepo · Next.js 15 web app on Vercel · Supabase Postgres · ingest worker on GitHub Actions</p>
+          <details class="managing">
+          <summary class="label">Managing</summary>
+          <ul class="manage">
+            <li>Domain at <strong>Porkbun</strong>. Hosted on <strong>Vercel</strong> under its own account, reading from <strong>Supabase</strong>.</li>
+            <li>Highlights come from the <strong>YouTube Data API</strong> and play through YouTube embeds; a lapsed or over-quota API key means no new videos. Reddit game-thread links come from <strong>Arctic Shift</strong>, a one-person Reddit archive with no uptime guarantee.</li>
+            <li>Ingest runs on <strong>GitHub Actions</strong>: a full daily pass, and an hourly video pass fired by an outside cron service because GitHub's own schedule is unreliable at that cadence.</li>
+            <li>A weekly audit posts findings to a <strong>GitHub</strong> issue every Monday. A quarterly drift audit, run by <strong>Claude Code</strong>, posts to a long-lived issue.</li>
+            <li><strong>UptimeRobot</strong> runs two monitors and emails when either goes down: one polls the site, so Down means readers can't reach it; the other polls the health endpoint, so Down means the site is fine but ingest has stopped.</li>
+            <li>The hi@ inbox is <strong>Zoho Mail</strong>, which also receives the suggestions form. Outbound mail, including the form, delivers through <strong>Resend</strong>.</li>
+            <li><strong>PostHog</strong> (EU cloud) handles analytics (cookieless) and error tracking.</li>
+            <li>Two tokens expire yearly: an <strong>Anthropic</strong> token for the drift audit and a <strong>GitHub</strong> personal access token for the hourly trigger. Rotate them together, ahead of time.</li>
+          </ul>
+          </details>
         </div>
-        <p class="blurb">Spoiler-free sports highlights aggregator.</p>
-        <p class="stack">pnpm monorepo · Next.js 15 web app on Vercel · Supabase Postgres · ingest worker on GitHub Actions</p>
-        <details class="managing">
-        <summary class="label">Managing</summary>
-        <ul class="manage">
-          <li>Domain at <strong>Porkbun</strong>. Hosted on <strong>Vercel</strong> under its own account, reading from <strong>Supabase</strong>.</li>
-          <li>Highlights come from the <strong>YouTube Data API</strong> and play through YouTube embeds; a lapsed or over-quota API key means no new videos. Reddit game-thread links come from <strong>Arctic Shift</strong>, a one-person Reddit archive with no uptime guarantee.</li>
-          <li>Ingest runs on <strong>GitHub Actions</strong>: a full daily pass, and an hourly video pass fired by an outside cron service because GitHub's own schedule is unreliable at that cadence.</li>
-          <li>A weekly audit posts findings to a <strong>GitHub</strong> issue every Monday. A quarterly drift audit, run by <strong>Claude Code</strong>, posts to a long-lived issue.</li>
-          <li><strong>UptimeRobot</strong> runs two monitors and emails when either goes down: one polls the site, so Down means readers can't reach it; the other polls the health endpoint, so Down means the site is fine but ingest has stopped.</li>
-          <li>The hi@ inbox is <strong>Zoho Mail</strong>, which also receives the suggestions form. Outbound mail, including the form, delivers through <strong>Resend</strong>.</li>
-          <li><strong>PostHog</strong> (EU cloud) handles analytics (cookieless) and error tracking.</li>
-          <li>Two tokens expire yearly: an <strong>Anthropic</strong> token for the drift audit and a <strong>GitHub</strong> personal access token for the hourly trigger. Rotate them together, ahead of time.</li>
-        </ul>
-        </details>
-      </article>
+      </details>
 
-      <article class="card">
-        <div class="head">
+      <details class="card" open>
+        <summary class="head">
           <h2><a class="main" href="https://wholewideworld.app">Whole Wide World</a></h2>
           <span class="chip domain">wholewideworld.app</span>
           <span class="chip">Porkbun</span>
           <a class="repo" href="https://github.com/tfiish/wholewideworld" aria-label="Repository" title="Repository">&lt;/&gt;</a>
+        </summary>
+        <div class="body">
+          <p class="blurb">A mobile-first web app that uses spaced repetition to teach where every country, state, and province is, on a globe you can spin and zoom.</p>
+          <div class="shots">
+            <img src="img/wholewideworld.webp" width="1600" height="1000" alt="Whole Wide World's home screen: the globe colored by progress, and the day's due count" loading="lazy">
+          </div>
+          <p class="stack">Vite · React · TypeScript · PWA with a service worker · all data in IndexedDB, no server · d3-geo · ts-fsrs · Cloudflare Pages, built from the <code>release</code> branch</p>
+          <details class="managing">
+          <summary class="label">Managing</summary>
+          <ul class="manage">
+            <li>Own domain at <strong>Porkbun</strong>, auto-renew on. DNS lives at <strong>Cloudflare</strong>, not Porkbun.</li>
+            <li><strong>Cloudflare</strong> does everything else: Pages builds on every push to <code>release</code> on <strong>GitHub</strong>, so the repo is part of the deploy path; it also issues the certificate, redirects www, and runs Email Routing.</li>
+            <li>Mail to hi@ forwards to the <strong>Gmail</strong> inbox via <strong>Cloudflare Email Routing</strong>. Catch-all is off, so any other address is dropped.</li>
+            <li><strong>PostHog</strong> (EU cloud) handles analytics (cookieless) and error tracking.</li>
+            <li>No server and no accounts. Reader progress lives in their own browser.</li>
+            <li>Yearly: refresh the <strong>Natural Earth</strong> data and the <strong>UN</strong> member list.</li>
+          </ul>
+          </details>
         </div>
-        <p class="blurb">A mobile-first web app that uses spaced repetition to teach where every country, state, and province is, on a globe you can spin and zoom.</p>
-        <p class="stack">Vite · React · TypeScript · PWA with a service worker · all data in IndexedDB, no server · d3-geo · ts-fsrs · Cloudflare Pages, built from the <code>release</code> branch</p>
-        <details class="managing">
-        <summary class="label">Managing</summary>
-        <ul class="manage">
-          <li>Own domain at <strong>Porkbun</strong>, auto-renew on. DNS lives at <strong>Cloudflare</strong>, not Porkbun.</li>
-          <li><strong>Cloudflare</strong> does everything else: Pages builds on every push to <code>release</code> on <strong>GitHub</strong>, so the repo is part of the deploy path; it also issues the certificate, redirects www, and runs Email Routing.</li>
-          <li>Mail to hi@ forwards to the <strong>Gmail</strong> inbox via <strong>Cloudflare Email Routing</strong>. Catch-all is off, so any other address is dropped.</li>
-          <li><strong>PostHog</strong> (EU cloud) handles analytics (cookieless) and error tracking.</li>
-          <li>No server and no accounts. Reader progress lives in their own browser.</li>
-          <li>Yearly: refresh the <strong>Natural Earth</strong> data and the <strong>UN</strong> member list.</li>
-        </ul>
-        </details>
-      </article>
+      </details>
 
-      <article class="card">
-        <div class="head">
+      <details class="card" open>
+        <summary class="head">
           <h2><a class="main" href="https://1qrl.app">1QRL</a></h2>
           <span class="chip domain">1qrl.app</span>
           <span class="chip">Porkbun</span>
           <span class="chip">Onespot</span>
           <a class="repo" href="https://github.com/onespotapps/1qrl" aria-label="Repository" title="Repository">&lt;/&gt;</a>
+        </summary>
+        <div class="body">
+          <p class="blurb">Tiny links, big QRs. A URL shortener whose short links encode into low-density QR codes that still scan from across a room.</p>
+          <div class="shots">
+            <img src="img/1qrl.webp" width="1600" height="1000" alt="1QRL's home page" loading="lazy">
+          </div>
+          <p class="stack">Next.js · React · TypeScript · Tailwind · Supabase (Postgres, auth) · Vercel, with a Vercel cron and pg_cron · ships via <code>npm run deploy</code></p>
+          <details class="managing">
+          <summary class="label">Managing</summary>
+          <ul class="manage">
+            <li>A <strong>Onespot</strong> product. Mail, legal, and routing all go through that entity; the contact address is hi@ on the domain.</li>
+            <li>Short links live at <code>1qrl.cc/</code>; the app itself is on <code>1qrl.app</code>.</li>
+            <li>Both domains at <strong>Porkbun</strong> on auto-renew.</li>
+            <li>Two <strong>Supabase</strong> projects, staging and production. A daily cron pings both so the free tier doesn't pause them.</li>
+            <li>Anonymous link creation on the home page is gated by <strong>Cloudflare Turnstile</strong>.</li>
+            <li>Auth email goes out through <strong>Resend</strong>. A weekly DMARC summary from <strong>Postmark</strong> lands in hi@.</li>
+            <li>Monthly: <strong>Supabase</strong> and <strong>Vercel</strong> usage, <strong>Resend</strong> quota, <strong>Search Console</strong>.</li>
+            <li>Sign in with <strong>Google</strong> on staging every five months or so, so Google doesn't retire the unused OAuth client.</li>
+          </ul>
+          </details>
         </div>
-        <p class="blurb">Tiny links, big QRs. A URL shortener whose short links encode into low-density QR codes that still scan from across a room.</p>
-        <p class="stack">Next.js · React · TypeScript · Tailwind · Supabase (Postgres, auth) · Vercel, with a Vercel cron and pg_cron · ships via <code>npm run deploy</code></p>
-        <details class="managing">
-        <summary class="label">Managing</summary>
-        <ul class="manage">
-          <li>A <strong>Onespot</strong> product. Mail, legal, and routing all go through that entity; the contact address is hi@ on the domain.</li>
-          <li>Short links live at <code>1qrl.cc/</code>; the app itself is on <code>1qrl.app</code>.</li>
-          <li>Both domains at <strong>Porkbun</strong> on auto-renew.</li>
-          <li>Two <strong>Supabase</strong> projects, staging and production. A daily cron pings both so the free tier doesn't pause them.</li>
-          <li>Anonymous link creation on the home page is gated by <strong>Cloudflare Turnstile</strong>.</li>
-          <li>Auth email goes out through <strong>Resend</strong>. A weekly DMARC summary from <strong>Postmark</strong> lands in hi@.</li>
-          <li>Monthly: <strong>Supabase</strong> and <strong>Vercel</strong> usage, <strong>Resend</strong> quota, <strong>Search Console</strong>.</li>
-          <li>Sign in with <strong>Google</strong> on staging every five months or so, so Google doesn't retire the unused OAuth client.</li>
-        </ul>
-        </details>
-      </article>
+      </details>
 
-      <article class="card">
-        <div class="head">
+      <details class="card" open>
+        <summary class="head">
           <h2><a class="main" href="https://github.com/tfiish/storystamper">StoryStamper</a></h2>
           <span class="chip">GitHub, public</span>
           <span class="chip">Mac app</span>
           <a class="repo" href="https://github.com/tfiish/storystamper" aria-label="Repository" title="Repository">&lt;/&gt;</a>
+        </summary>
+        <div class="body">
+          <p class="blurb">A native, lightweight Mac app to quickly add Instagram-story-style text blocks to a vertical video.</p>
+          <div class="shots">
+            <img src="img/storystamper.webp" width="1600" height="1000" alt="StoryStamper's editor window" loading="lazy">
+          </div>
+          <p class="stack">Swift 6 · SwiftUI · Swift Package, no Xcode project · FFmpeg for export · ad-hoc signed, not notarized · built with <code>Scripts/make-app.sh</code></p>
+          <details class="managing">
+          <summary class="label">Managing</summary>
+          <ul class="manage">
+            <li>Nothing to manage: no hosting, no domain, nothing runs on a schedule. It ships as source and tagged <strong>GitHub</strong> Releases, published by hand with the <code>gh</code> CLI.</li>
+            <li>Building needs macOS 14 or later and <strong>Xcode</strong> 16 or the Command Line Tools. Export needs <strong>FFmpeg</strong>, from <strong>Homebrew</strong> by default or bundled into the app; fast export needs a build with Apple's VideoToolbox encoder.</li>
+          </ul>
+          </details>
         </div>
-        <p class="blurb">A native, lightweight Mac app to quickly add Instagram-story-style text blocks to a vertical video.</p>
-        <p class="stack">Swift 6 · SwiftUI · Swift Package, no Xcode project · FFmpeg for export · ad-hoc signed, not notarized · built with <code>Scripts/make-app.sh</code></p>
-        <details class="managing">
-        <summary class="label">Managing</summary>
-        <ul class="manage">
-          <li>Nothing to manage: no hosting, no domain, nothing runs on a schedule. It ships as source and tagged <strong>GitHub</strong> Releases, published by hand with the <code>gh</code> CLI.</li>
-          <li>Building needs macOS 14 or later and <strong>Xcode</strong> 16 or the Command Line Tools. Export needs <strong>FFmpeg</strong>, from <strong>Homebrew</strong> by default or bundled into the app; fast export needs a build with Apple's VideoToolbox encoder.</li>
-        </ul>
-        </details>
-      </article>
+      </details>
 
-      <article class="card">
-        <div class="head">
+      <details class="card" open>
+        <summary class="head">
           <h2><a class="main" href="https://markmadness.vercel.app">Mark Madness</a></h2>
           <span class="chip domain">markmadness.vercel.app</span>
           <span class="chip">no custom domain</span>
           <a class="repo" href="https://github.com/tfiish/markmadness" aria-label="Repository" title="Repository">&lt;/&gt;</a>
+        </summary>
+        <div class="body">
+          <p class="blurb">The official portal for all things Mark Madness (private for competitors only).</p>
+          <div class="shots">
+            <img src="img/markmadness.webp" width="1600" height="1000" alt="The Mark Madness 2026 dashboard" loading="lazy">
+          </div>
+          <p class="stack">Vite · React · TypeScript · Tailwind · shadcn/Radix · Vercel Hobby plan</p>
+          <details class="managing">
+          <summary class="label">Managing</summary>
+          <ul class="manage">
+            <li>Backend is <strong>Lovable Cloud</strong>, which is <strong>Supabase</strong> underneath: auth, database, and edge functions. Migrations are managed centrally and never run locally.</li>
+            <li><strong>Vercel</strong> Hobby only deploys pushes from the repo owner.</li>
+            <li>Backend credentials live in a gitignored <code>.env</code>, never in the repo.</li>
+          </ul>
+          </details>
         </div>
-        <p class="blurb">The official portal for all things Mark Madness (private for competitors only).</p>
-        <p class="stack">Vite · React · TypeScript · Tailwind · shadcn/Radix · Vercel Hobby plan</p>
-        <details class="managing">
-        <summary class="label">Managing</summary>
-        <ul class="manage">
-          <li>Backend is <strong>Lovable Cloud</strong>, which is <strong>Supabase</strong> underneath: auth, database, and edge functions. Migrations are managed centrally and never run locally.</li>
-          <li><strong>Vercel</strong> Hobby only deploys pushes from the repo owner.</li>
-          <li>Backend credentials live in a gitignored <code>.env</code>, never in the repo.</li>
-        </ul>
-        </details>
-      </article>
+      </details>
 
-      <article class="card">
-        <div class="head">
+      <details class="card" open>
+        <summary class="head">
           <h2><a class="main" href="https://tfiish.github.io">tfiish</a></h2>
           <span class="chip domain">tfiish.github.io</span>
           <a class="repo" href="https://github.com/tfiish/tfiish.github.io" aria-label="Repository" title="Repository">&lt;/&gt;</a>
+        </summary>
+        <div class="body">
+          <p class="blurb">This page.</p>
+          <div class="shots">
+            <img src="img/tfiish.webp" width="1600" height="1000" alt="This page's project cards" loading="lazy">
+          </div>
+          <p class="stack">GitHub Pages</p>
+          <details class="managing">
+          <summary class="label">Managing</summary>
+          <ul class="manage">
+            <li>Nothing to manage: push updates (to the one HTML file) to <code>main</code> and <strong>GitHub Pages</strong> redeploys.</li>
+          </ul>
+          </details>
         </div>
-        <p class="blurb">This page.</p>
-        <p class="stack">GitHub Pages</p>
-        <details class="managing">
-        <summary class="label">Managing</summary>
-        <ul class="manage">
-          <li>Nothing to manage: push updates (to the one HTML file) to <code>main</code> and <strong>GitHub Pages</strong> redeploys.</li>
-        </ul>
-        </details>
-      </article>
+      </details>
 
     </div>
 
@@ -451,7 +554,8 @@
       });
       search.addEventListener('keydown', function (e) { if (e.key === 'Escape') search.blur(); });
       // Expand or collapse every card's Managing notes at once. The label says what
-      // the next click does: "expand" while any card is closed, otherwise "collapse".
+      // the next click does: "expand" while any notes are closed, otherwise "collapse".
+      // Expanding also opens any collapsed card, so the notes show.
       var notesButton = document.getElementById('notes');
       var details = Array.prototype.slice.call(document.querySelectorAll('details.managing'));
       function syncNotes() {
@@ -460,7 +564,10 @@
       }
       notesButton.addEventListener('click', function () {
         var open = details.some(function (d) { return !d.open; });
-        details.forEach(function (d) { d.open = open; });
+        details.forEach(function (d) {
+          d.open = open;
+          if (open) d.closest('.card').open = true;
+        });
         syncNotes();
       });
       details.forEach(function (d) { d.addEventListener('toggle', syncNotes); });
@@ -473,9 +580,47 @@
       });
       render();
     })();
+    // Two or more screenshots in a card make a carousel. The strip scrolls on its own
+    // (swipe, or a trackpad); the arrows step through it, wrapping at the ends, and the
+    // dots follow along.
+    document.querySelectorAll('.shots').forEach(function (shots) {
+      var imgs = shots.querySelectorAll('img');
+      if (imgs.length < 2) return;
+      var carousel = document.createElement('div');
+      carousel.className = 'carousel';
+      shots.parentNode.insertBefore(carousel, shots);
+      carousel.appendChild(shots);
+      function index() { return shots.clientWidth ? Math.round(shots.scrollLeft / shots.clientWidth) : 0; }
+      function go(i) { shots.scrollTo({ left: ((i + imgs.length) % imgs.length) * shots.clientWidth }); }
+      [['prev', '‹', -1, 'Previous screenshot'], ['next', '›', 1, 'Next screenshot']].forEach(function (s) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'step ' + s[0];
+        b.textContent = s[1];
+        b.setAttribute('aria-label', s[3]);
+        b.addEventListener('click', function () { go(index() + s[2]); });
+        carousel.appendChild(b);
+      });
+      var dots = document.createElement('div');
+      dots.className = 'dots';
+      Array.prototype.forEach.call(imgs, function (img, i) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.setAttribute('aria-label', 'Screenshot ' + (i + 1) + ' of ' + imgs.length);
+        b.addEventListener('click', function () { go(i); });
+        dots.appendChild(b);
+      });
+      carousel.parentNode.insertBefore(dots, carousel.nextSibling);
+      function sync() {
+        var i = index();
+        Array.prototype.forEach.call(dots.children, function (b, j) { b.setAttribute('aria-current', String(j === i)); });
+      }
+      shots.addEventListener('scroll', sync, { passive: true });
+      sync();
+    });
     document.querySelectorAll('.card').forEach(function (card) {
       card.addEventListener('click', function (e) {
-        if (e.target.closest('a, summary')) return;
+        if (e.target.closest('a, summary, button')) return;
         if (String(getSelection()).length) return;
         var href = card.querySelector('h2 a').href;
         if (e.metaKey || e.ctrlKey) window.open(href); else location.href = href;
