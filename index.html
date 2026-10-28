@@ -319,7 +319,7 @@
     <header>
       <div>
         <h1>tfiish</h1>
-        <p class="sub">side projects · last updated <time id="updated" datetime="2026-10-21">2026-10-21</time></p>
+        <p class="sub">solo side projects · last updated <time id="updated" datetime="2026-10-28">2026-10-28</time></p>
       </div>
       <!-- Cycles through THEMES below. Add a theme: a :root[data-theme="…"] block above, and its name here. -->
       <button id="theme" type="button" aria-label="Switch theme">theme</button>
@@ -384,16 +384,17 @@
             <img src="img/wholewideworld-decks.webp" width="1600" height="1000" alt="Whole Wide World's Decks list, with progress and what's due" loading="lazy">
             <img src="img/wholewideworld-locate.webp" width="1600" height="1000" alt="A Locate question in Whole Wide World, with a dotted line from a missed guess to the answer" loading="lazy">
           </div>
-          <p class="stack">Vite · React · TypeScript · PWA with a service worker · all data in IndexedDB, no server · d3-geo · ts-fsrs · Cloudflare Pages, built from the <code>release</code> branch</p>
+          <p class="stack">Vite · React · TypeScript · PWA with a service worker · progress in IndexedDB on the reader's device · d3-geo · ts-fsrs · Cloudflare Pages, built from the <code>release</code> branch · a Cloudflare Worker with Durable Objects for Magic Transfer, deployed by hand with Wrangler</p>
           <details class="managing">
           <summary class="label">Managing</summary>
           <ul class="manage">
             <li>Own domain at <strong>Porkbun</strong>, auto-renew on. DNS lives at <strong>Cloudflare</strong>, not Porkbun.</li>
-            <li><strong>Cloudflare</strong> does everything else: Pages builds on every push to <code>release</code> on <strong>GitHub</strong>, so the repo is part of the deploy path; it also issues the certificate, redirects www, and runs Email Routing.</li>
+            <li><strong>Cloudflare</strong> does everything else: Pages builds on every push to <code>release</code> on <strong>GitHub</strong>, so the repo is part of the deploy path; it also issues the certificate, redirects www, runs Email Routing, and hosts the Magic Transfer relay.</li>
+            <li>The <strong>Magic Transfer</strong> relay is a Cloudflare Worker on <code>/api/transfer/*</code>, on the Workers Free plan. It doesn't deploy from GitHub: run <code>pnpm relay:deploy</code> (Wrangler, logged in on the Mac) whenever <code>relay/</code> changes, before shipping.</li>
             <li>Mail to hi@ forwards to the <strong>Gmail</strong> inbox via <strong>Cloudflare Email Routing</strong>. Catch-all is off, so any other address is dropped.</li>
             <li><strong>PostHog</strong> (EU cloud) handles analytics (cookieless) and error tracking.</li>
-            <li>No server and no accounts. Reader progress lives in their own browser.</li>
-            <li>Yearly: refresh the <strong>Natural Earth</strong> data and the <strong>UN</strong> member list.</li>
+            <li>No accounts. Reader progress lives in their own browser; Magic Transfer passes an encrypted copy through the relay, which deletes it once it's taken or after 15 minutes.</li>
+            <li>Yearly: refresh the <strong>Natural Earth</strong> data and the <strong>UN</strong> member list, and check the relay with the <code>curl</code> in the README.</li>
           </ul>
           </details>
         </div>
