@@ -1,6 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" shape-rendering="crispEdges">
-  <!-- A pixel fish in the Arcade palette: panel background, lime body, ice eye. -->
-  <rect width="16" height="16" rx="3" fill="#1a1532"/>
+  <!-- A pixel fish in the Arcade palette: lime body, ice eye. -->
   <g fill="#c4ff3d">
     <rect x="7" y="4" width="4" height="1"/>
     <rect x="6" y="5" width="6" height="1"/>
