@@ -314,14 +314,17 @@
     .ow { position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); color: var(--fg); font-size: .8rem; opacity: 0; pointer-events: none; }
     @keyframes ow { from { opacity: 1; } to { opacity: 0; translate: 0 -6px; } }
     .fish.hurt .ow { animation: ow 1s ease-in; }
-    .fish img { display: block; opacity: .8; image-rendering: pixelated; }
+    .fish svg { display: block; opacity: .8; }
     .fish:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     /* The fish rests at either edge of the column. .away parks it --span to the left, facing the way it swam. */
     .fish.away { translate: calc(-1 * var(--span)) 0; }
-    .fish.away img { transform: scaleX(-1); }
+    .fish.away svg { transform: scaleX(-1); }
     @keyframes bob { 50% { translate: 0 -2px; } }
-    .fish.swimming img { animation: bob .6s ease-in-out infinite; }
-    @media (prefers-reduced-motion: reduce) { .fish { transition: none; } .fish.swimming img { animation: none; } @keyframes ow { from { opacity: 1; } to { opacity: 0; } } }
+    .fish.swimming:not(.stunned) svg { animation: bob .6s ease-in-out infinite; }
+    /* A stunned fish holds still with an x for an eye until it's poked again. */
+    .fish .x, .fish.stunned .eye { display: none; }
+    .fish.stunned .x { display: inline; }
+    @media (prefers-reduced-motion: reduce) { .fish { transition: none; } .fish.swimming svg { animation: none; } @keyframes ow { from { opacity: 1; } to { opacity: 0; } } }
     footer a { color: inherit; }
   </style>
 </head>
@@ -512,7 +515,33 @@
     </div>
 
     <footer>
-      <button class="fish" id="fish" type="button" aria-label="Make the fish swim"><img src="favicon.svg" width="32" height="32" alt=""><span class="ow" aria-hidden="true">ow</span></button>
+      <!-- The fish from favicon.svg, inline so its eye can turn to an x. -->
+      <button class="fish" id="fish" type="button" aria-label="Poke the fish">
+        <svg viewBox="0 0 16 16" width="32" height="32" shape-rendering="crispEdges" aria-hidden="true">
+          <g fill="#c4ff3d">
+            <rect x="7" y="4" width="4" height="1"/>
+            <rect x="6" y="5" width="6" height="1"/>
+            <rect x="5" y="6" width="8" height="1"/>
+            <rect x="4" y="7" width="10" height="2"/>
+            <rect x="5" y="9" width="8" height="1"/>
+            <rect x="6" y="10" width="6" height="1"/>
+            <rect x="7" y="11" width="4" height="1"/>
+            <rect x="2" y="5" width="1" height="1"/>
+            <rect x="2" y="6" width="2" height="1"/>
+            <rect x="2" y="9" width="2" height="1"/>
+            <rect x="2" y="10" width="1" height="1"/>
+          </g>
+          <rect class="eye" x="11" y="6" width="1" height="1" fill="#7df9ff"/>
+          <g class="x" fill="#1a1532">
+            <rect x="9" y="5" width="1" height="1"/>
+            <rect x="11" y="5" width="1" height="1"/>
+            <rect x="10" y="6" width="1" height="1"/>
+            <rect x="9" y="7" width="1" height="1"/>
+            <rect x="11" y="7" width="1" height="1"/>
+          </g>
+        </svg>
+        <span class="ow" aria-hidden="true">ow</span>
+      </button>
     </footer>
   </main>
   <script>
@@ -657,36 +686,67 @@
       });
     })();
     (function () {
-      // A mouse coming near the fish, or a click, sends it to the other edge of the footer, where it waits to be disturbed again.
+      // A mouse coming near the fish sends it to the other edge of the footer, where it waits to be disturbed again.
+      // Poking it stuns it in place; poking it again sends it on the way it faces.
       var fish = document.getElementById('fish');
       var still = matchMedia('(prefers-reduced-motion: reduce)');
       var NEAR = 56;
-      function measure() { fish.style.setProperty('--span', (fish.parentNode.clientWidth - fish.offsetWidth) + 'px'); }
+      var span = 0;
+      function measure() {
+        span = fish.parentNode.clientWidth - fish.offsetWidth;
+        fish.style.setProperty('--span', span + 'px');
+      }
       function swim() {
-        if (still.matches || fish.classList.contains('swimming')) return;
+        if (still.matches || fish.classList.contains('swimming') || fish.classList.contains('stunned')) return;
         measure();
         fish.classList.add('swimming');
         fish.classList.toggle('away');
+      }
+      function landed() {
+        fish.classList.remove('swimming');
+        fish.style.translate = '';
+        fish.style.transitionDuration = '';
       }
       document.addEventListener('pointermove', function (e) {
         if (e.pointerType !== 'mouse') return;
         var r = fish.getBoundingClientRect();
         if (Math.hypot(e.clientX - (r.left + r.width / 2), e.clientY - (r.top + r.height / 2)) < NEAR) swim();
       }, { passive: true });
-      // Catching it says ow. pointerdown counts a press on a fish that swims off before the click would land;
-      // a click with no pointer behind it (detail 0) is the keyboard.
       function ow() {
         fish.classList.remove('hurt');
         void fish.offsetWidth;
         fish.classList.add('hurt');
       }
-      fish.addEventListener('pointerdown', ow);
+      function poke() {
+        if (!fish.classList.contains('stunned')) {
+          // Pinning the mid-swim position inline, with transitions off, stops the fish right where it is.
+          if (fish.classList.contains('swimming')) {
+            var here = getComputedStyle(fish).translate;
+            fish.style.transition = 'none';
+            fish.style.translate = here;
+          }
+          fish.classList.add('stunned');
+          ow();
+          return;
+        }
+        fish.classList.remove('stunned');
+        if (!fish.classList.contains('swimming')) return swim();
+        // Finish the interrupted swim at the speed it was going: the time left scales with the distance left.
+        measure();
+        var left = Math.abs((fish.classList.contains('away') ? -span : 0) - (parseFloat(fish.style.translate) || 0));
+        fish.style.transition = '';
+        if (left < 1) return landed();
+        fish.style.transitionDuration = (1.3 * left / span) + 's';
+        fish.style.translate = '';
+      }
+      // pointerdown counts a press on a fish that swims off before the click would land;
+      // a click with no pointer behind it (detail 0) is the keyboard.
+      fish.addEventListener('pointerdown', poke);
       fish.addEventListener('click', function (e) {
-        if (e.detail === 0) ow();
-        swim();
+        if (e.detail === 0) poke();
       });
       fish.addEventListener('transitionend', function (e) {
-        if (e.target === fish) fish.classList.remove('swimming');
+        if (e.target === fish) landed();
       });
       fish.addEventListener('animationend', function (e) {
         if (e.animationName === 'ow') fish.classList.remove('hurt');
