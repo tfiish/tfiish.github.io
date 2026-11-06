@@ -300,6 +300,7 @@
     }
     ul.manage li { margin: .15rem 0; }
     ul.manage li::marker { color: var(--muted); }
+    ul.manage a { color: inherit; }
     code {
       font: .92em ui-monospace, SFMono-Regular, Menlo, monospace;
       background: var(--chip);
@@ -471,7 +472,6 @@
         <summary class="head">
           <h2><a class="main" href="https://markmadness.vercel.app">Mark Madness</a></h2>
           <span class="chip domain">markmadness.vercel.app</span>
-          <span class="chip">no custom domain</span>
           <a class="repo" href="https://github.com/tfiish/markmadness" aria-label="Repository" title="Repository">&lt;/&gt;</a>
         </summary>
         <div class="body">
@@ -495,7 +495,6 @@
         <summary class="head">
           <h2><a class="main" href="https://homeexercises.vercel.app">Home Program Builder</a></h2>
           <span class="chip domain">homeexercises.vercel.app</span>
-          <span class="chip">no custom domain</span>
           <a class="repo" href="https://github.com/tfiish/home-exercises" aria-label="Repository" title="Repository">&lt;/&gt;</a>
         </summary>
         <div class="body">
@@ -505,9 +504,8 @@
           <summary class="label">Managing</summary>
           <ul class="manage">
             <li>Hosted on <strong>Vercel</strong> (Hobby) as static files. Every push to <code>main</code> on <strong>GitHub</strong> deploys to production; other branches get preview URLs.</li>
-            <li>Content lives in a <strong>Google Sheet</strong>. Its Library and Copy tabs are published to the web as CSV and fetched on every page load, so edits show up within about five minutes. The two published URLs are in <code>config.js</code>.</li>
-            <li>If a tab stops being published, or is deleted and remade (which gives it a new link), the page shows a banner and falls back to built-in text. Republish it, and update <code>config.js</code> if the link changed.</li>
-            <li>Nothing about patients is stored or sent anywhere: a program lives only in the browser tab until it's saved as a PDF. No accounts, no analytics, and no backend.</li>
+            <li>Content lives in a <a href="https://docs.google.com/spreadsheets/d/1q-uoxys_sKC_WBVeaUn1DbKYdn95e7KIIVZkMu3n4pk"><strong>Google Sheet</strong></a>. Its Library and Copy tabs are published to the web as CSV and fetched on every page load (via the links in <code>config.js</code>); edits show up in the web app within minutes.</li>
+            <li>No data is stored or sent anywhere. A program lives only in the browser tab until it's saved as a PDF. No accounts, no analytics, no backend.</li>
           </ul>
           </details>
         </div>
