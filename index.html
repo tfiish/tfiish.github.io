@@ -33,9 +33,10 @@
     .fish.hurt .ow { animation: ow 1s ease-in; }
     .fish svg { display: block; opacity: .85; }
     .fish:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
-    /* The fish rests at either edge of the pond. .away parks it --span to the left, facing the way it swam. */
-    .fish.away { translate: calc(-1 * var(--span)) 0; }
-    .fish.away svg { transform: scaleX(-1); }
+    /* The fish swims to points anywhere in the pond (translate is set from script), facing the way it went and
+       tilting toward where it's headed. .left flips it to face left. */
+    .fish svg { transition: rotate .4s ease-out; rotate: var(--tilt, 0deg); }
+    .fish.left svg { transform: scaleX(-1); }
     @keyframes bob { 50% { translate: 0 -3px; } }
     .fish.swimming:not(.stunned) svg { animation: bob .6s ease-in-out infinite; }
     /* A stunned fish holds still with an x for an eye until it's poked again. */
@@ -78,34 +79,61 @@
   </div>
   <script>
     (function () {
-      // The projects page's fish, given the whole width. A mouse coming near sends it to the other edge, where it
-      // waits to be disturbed again. Poking it stuns it in place; poking it again sends it on the way it faces.
-      // It swims at the footer fish's speed, so a wide window means a longer swim, not a faster one.
+      // The projects page's fish, given the whole pond. A mouse coming near sends it off to some other spot, picked
+      // to be well away from the mouse, where it waits to be disturbed again. Poking it stuns it in place; poking
+      // it again sends it on its way. It swims at the footer fish's speed, so a big window means a longer swim.
       var fish = document.getElementById('fish');
       var still = matchMedia('(prefers-reduced-motion: reduce)');
       var NEAR = 96;
       var SPEED = 640; // px per second
-      var span = 0;
+      var MARGIN = 16;
+      var spanX = 0, spanY = 0;
+      var at = { x: 0, y: 0 };     // where the fish rests, or is headed, relative to its home at the right edge
       function measure() {
-        span = fish.parentNode.clientWidth - 32 - fish.offsetWidth;
-        fish.style.setProperty('--span', span + 'px');
-        fish.style.setProperty('--dur', Math.max(.6, span / SPEED) + 's');
+        spanX = Math.max(0, fish.parentNode.clientWidth - 2 * MARGIN - fish.offsetWidth);
+        spanY = Math.max(0, (document.documentElement.clientHeight - fish.offsetHeight) / 2 - MARGIN);
       }
-      function swim() {
+      function place(x, y) { fish.style.translate = x + 'px ' + y + 'px'; }
+      function duration(d) { return Math.max(.4, d / SPEED) + 's'; }
+      // Several random spots; the one farthest from the mouse wins, as long as it's a real swim.
+      function pick(from) {
+        var best = null, bestScore = -1;
+        for (var i = 0; i < 8; i++) {
+          var c = { x: -Math.random() * spanX, y: (Math.random() * 2 - 1) * spanY };
+          var travel = Math.hypot(c.x - at.x, c.y - at.y);
+          if (travel < Math.min(160, spanX / 2 + spanY)) continue;
+          var score = from ? Math.hypot(c.x - from.x, c.y - from.y) : Math.random();
+          if (score > bestScore) { best = c; bestScore = score; }
+        }
+        return best || { x: at.x ? 0 : -spanX, y: -at.y };
+      }
+      function swim(from) {
         if (still.matches || fish.classList.contains('swimming') || fish.classList.contains('stunned')) return;
         measure();
+        var to = pick(from);
+        var dx = to.x - at.x, dy = to.y - at.y;
+        if (Math.abs(dx) > 1) fish.classList.toggle('left', dx < 0);
+        // Nose toward the destination: rotation is in screen terms, so a fish facing left tilts the other way.
+        var tilt = Math.max(-40, Math.min(40, Math.atan2(dy, Math.abs(dx)) * 180 / Math.PI));
+        fish.style.setProperty('--tilt', (fish.classList.contains('left') ? -tilt : tilt) + 'deg');
+        fish.style.transitionDuration = duration(Math.hypot(dx, dy));
         fish.classList.add('swimming');
-        fish.classList.toggle('away');
+        at = to;
+        place(to.x, to.y);
       }
       function landed() {
         fish.classList.remove('swimming');
-        fish.style.translate = '';
         fish.style.transitionDuration = '';
+        fish.style.removeProperty('--tilt');
       }
       document.addEventListener('pointermove', function (e) {
         if (e.pointerType !== 'mouse') return;
         var r = fish.getBoundingClientRect();
-        if (Math.hypot(e.clientX - (r.left + r.width / 2), e.clientY - (r.top + r.height / 2)) < NEAR) swim();
+        var cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+        if (Math.hypot(e.clientX - cx, e.clientY - cy) < NEAR) {
+          // The mouse in the fish's own coordinates (relative to home), so spots can be compared with it.
+          swim({ x: at.x + e.clientX - cx, y: at.y + e.clientY - cy });
+        }
       }, { passive: true });
       function ow() {
         fish.classList.remove('hurt');
@@ -128,11 +156,12 @@
         if (!fish.classList.contains('swimming')) return swim();
         // Finish the interrupted swim at the same speed: the time left scales with the distance left.
         measure();
-        var left = Math.abs((fish.classList.contains('away') ? -span : 0) - (parseFloat(fish.style.translate) || 0));
+        var here = (fish.style.translate || '0px 0px').split(' ').map(parseFloat);
+        var left = Math.hypot(at.x - here[0], at.y - (here[1] || 0));
         fish.style.transition = '';
         if (left < 1) return landed();
-        fish.style.transitionDuration = (left / SPEED) + 's';
-        fish.style.translate = '';
+        fish.style.transitionDuration = duration(left);
+        place(at.x, at.y);
       }
       // pointerdown counts a press on a fish that swims off before the click would land;
       // a click with no pointer behind it (detail 0) is the keyboard.
@@ -141,12 +170,19 @@
         if (e.detail === 0) poke();
       });
       fish.addEventListener('transitionend', function (e) {
-        if (e.target === fish) landed();
+        if (e.target === fish && e.propertyName === 'translate') landed();
       });
       fish.addEventListener('animationend', function (e) {
         if (e.animationName === 'ow') fish.classList.remove('hurt');
       });
-      addEventListener('resize', measure);
+      // A resized pond keeps a resting fish inside it.
+      addEventListener('resize', function () {
+        measure();
+        if (fish.classList.contains('swimming')) return;
+        at = { x: Math.max(at.x, -spanX), y: Math.max(-spanY, Math.min(spanY, at.y)) };
+        place(at.x, at.y);
+      });
+      measure();
     })();
   </script>
 </body>
