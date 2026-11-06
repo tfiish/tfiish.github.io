@@ -208,6 +208,40 @@
       color: var(--fg);
     }
     .blurb { margin: 0 0 .6rem; }
+    .linkish {
+      font: inherit;
+      color: inherit;
+      background: none;
+      border: 0;
+      padding: 0;
+      cursor: pointer;
+      text-decoration: underline dotted;
+      text-underline-offset: .2em;
+    }
+    .linkish:hover { color: var(--accent); }
+    dialog#keys {
+      color: var(--fg);
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      box-shadow: var(--shadow-hover);
+      padding: 1rem 1.25rem;
+      font-size: .88rem;
+      line-height: 1.5;
+    }
+    dialog#keys::backdrop { background: rgba(0, 0, 0, .4); }
+    :root[data-theme="terminal"] dialog#keys { border-radius: 2px; }
+    dialog#keys h2 { margin: 0 0 .5rem; font-size: 1rem; }
+    dialog#keys dl { display: grid; grid-template-columns: auto auto; gap: .3rem 1rem; margin: 0; }
+    dialog#keys dt { text-align: right; white-space: nowrap; }
+    dialog#keys dd { margin: 0; color: var(--muted); }
+    kbd {
+      font: .92em ui-monospace, SFMono-Regular, Menlo, monospace;
+      background: var(--chip);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: .05em .4em;
+    }
     .stack {
       margin: 0 0 .75rem;
       font-size: .82rem;
@@ -346,6 +380,18 @@
       <button id="expand" type="button" aria-label="Expand or collapse all cards">collapse</button>
     </div>
     <p id="empty" class="empty" hidden>No projects match.</p>
+
+    <dialog id="keys" aria-label="Keyboard shortcuts">
+      <h2>Keyboard shortcuts</h2>
+      <dl>
+        <dt><kbd>/</kbd> or <kbd>f</kbd></dt><dd>search projects</dd>
+        <dt><kbd>t</kbd></dt><dd>switch theme</dd>
+        <dt><kbd>s</kbd></dt><dd>change sort order</dd>
+        <dt><kbd>x</kbd></dt><dd>expand or collapse all</dd>
+        <dt><kbd>?</kbd></dt><dd>show or hide this list</dd>
+        <dt><kbd>Esc</kbd></dt><dd>close this list, or leave search</dd>
+      </dl>
+    </dialog>
 
     <!-- A click on a card's title line collapses the card. A click on its body follows the title link, unless it lands on
          another link or button, or ends a text selection. Document order here is the default sort order. To add a project,
@@ -518,7 +564,7 @@
           <a class="repo" href="https://github.com/tfiish/tfiish.github.io" aria-label="Repository" title="Repository">&lt;/&gt;</a>
         </summary>
         <div class="body">
-          <p class="blurb">Hosts the supporting pages (like privacy policies) for projects without domains of their own, as well as this overview page listing all of my current side projects.</p>
+          <p class="blurb">Hosts the supporting pages (like privacy policies) for projects without domains of their own, as well as this overview page listing all of my current side projects. <button type="button" id="keys-open" class="linkish">Supports keyboard shortcuts.</button></p>
           <div class="shots">
             <img src="img/tfiish.webp" width="2000" height="1443" alt="This page's project cards" loading="lazy">
           </div>
@@ -607,14 +653,6 @@
       }
 
       search.addEventListener('input', render);
-      // A bare "f" anywhere on the page jumps to the search box. Cmd/Ctrl+F stays the browser's.
-      document.addEventListener('keydown', function (e) {
-        if (e.key !== 'f' || e.metaKey || e.ctrlKey || e.altKey) return;
-        if (e.target.closest('input, textarea, [contenteditable]')) return;
-        e.preventDefault();
-        search.focus();
-        search.select();
-      });
       search.addEventListener('keydown', function (e) { if (e.key === 'Escape') search.blur(); });
       // Expand or collapse every card at once. The label says what the next click
       // does: "expand" while any card is collapsed, otherwise "collapse".
@@ -630,6 +668,22 @@
       });
       cards.forEach(function (c) { c.addEventListener('toggle', syncExpand); });
       syncExpand();
+
+      // Bare-key shortcuts, ignored while typing and when Cmd, Ctrl, or Alt is held, so the browser's own stay its own.
+      var keys = document.getElementById('keys');
+      function toggleKeys() { if (keys.open) keys.close(); else keys.showModal(); }
+      document.getElementById('keys-open').addEventListener('click', toggleKeys);
+      keys.addEventListener('click', function (e) { if (e.target === keys) keys.close(); });
+      document.addEventListener('keydown', function (e) {
+        if (e.metaKey || e.ctrlKey || e.altKey) return;
+        if (e.target.closest('input, textarea, select, [contenteditable]')) return;
+        if (e.key === '?') { e.preventDefault(); toggleKeys(); return; }
+        if (keys.open) return;
+        if (e.key === 'f' || e.key === '/') { e.preventDefault(); search.focus(); search.select(); }
+        else if (e.key === 't') document.getElementById('theme').click();
+        else if (e.key === 's') sortButton.click();
+        else if (e.key === 'x') expandButton.click();
+      });
 
       sortButton.addEventListener('click', function () {
         sort = SORTS[(SORTS.indexOf(sort) + 1) % SORTS.length];
