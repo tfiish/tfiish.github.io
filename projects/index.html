@@ -493,6 +493,28 @@
 
       <details class="card" open>
         <summary class="head">
+          <h2><a class="main" href="https://homeexercises.vercel.app">Home Program Builder</a></h2>
+          <span class="chip domain">homeexercises.vercel.app</span>
+          <span class="chip">no custom domain</span>
+          <a class="repo" href="https://github.com/tfiish/home-exercises" aria-label="Repository" title="Repository">&lt;/&gt;</a>
+        </summary>
+        <div class="body">
+          <p class="blurb">A small web app for a physical therapist to build a patient's home exercise program in a couple of minutes and save it as a PDF, with the exercise library and every word on the PDF kept in a Google Sheet the therapist edits.</p>
+          <p class="stack">Plain HTML, CSS, and JavaScript (ES modules), no build step · Papa Parse from cdnjs · Google Sheets tabs published as CSV · PDF through the browser's print dialog · Vercel Hobby plan</p>
+          <details class="managing">
+          <summary class="label">Managing</summary>
+          <ul class="manage">
+            <li>Hosted on <strong>Vercel</strong> (Hobby) as static files, deployed by hand with <code>vercel deploy --prod</code>. The <strong>GitHub</strong> repo isn't connected to Vercel, so a push doesn't deploy.</li>
+            <li>Content lives in a <strong>Google Sheet</strong>. Its Library and Copy tabs are published to the web as CSV and fetched on every page load, so edits show up within about five minutes. The two published URLs are in <code>config.js</code>.</li>
+            <li>If a tab stops being published, or is deleted and remade (which gives it a new link), the page shows a banner and falls back to built-in text. Republish it, and update <code>config.js</code> if the link changed.</li>
+            <li>Nothing about patients is stored or sent anywhere: a program lives only in the browser tab until it's saved as a PDF. No accounts, no analytics, and no backend.</li>
+          </ul>
+          </details>
+        </div>
+      </details>
+
+      <details class="card" open>
+        <summary class="head">
           <h2><a class="main" href="https://tfiish.github.io/projects/">tfiish</a></h2>
           <span class="chip domain">tfiish.github.io</span>
           <a class="repo" href="https://github.com/tfiish/tfiish.github.io" aria-label="Repository" title="Repository">&lt;/&gt;</a>
