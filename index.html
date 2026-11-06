@@ -1,699 +1,95 @@
 <!doctype html>
-<html lang="en" data-theme="arcade">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>tfiish · side projects</title>
+  <title>tfiish</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
-  <meta name="description" content="Side projects by tfiish.">
+  <meta name="description" content="A fish.">
   <style>
+    /* The arcade theme's colors, fixed: the fish is drawn in them, so it always swims in its own water. */
     :root {
-      --bg: #f4f4f0;
-      --card: #ffffff;
-      --fg: #1a1a1a;
-      --muted: #6b6b66;
-      --line: #e2e2dc;
-      --chip: #ecece6;
-      --accent: #2554c7;
-      --shadow: 0 1px 2px rgba(0,0,0,.05);
-      --shadow-hover: 0 6px 18px rgba(0,0,0,.09);
-    }
-    :root[data-theme="dark"] {
-      --bg: #111111;
-      --card: #1b1b1b;
-      --fg: #ececec;
-      --muted: #9a9a94;
-      --line: #2c2c2c;
-      --chip: #262626;
-      --accent: #7aa2ff;
-      --shadow: 0 1px 2px rgba(0,0,0,.4);
-      --shadow-hover: 0 6px 18px rgba(0,0,0,.5);
-    }
-    :root[data-theme="terminal"] {
-      --bg: #000000;
-      --card: #040a04;
-      --fg: #33ff33;
-      --muted: #1fa81f;
-      --line: #0f3f0f;
-      --chip: #072607;
-      --accent: #7dff7d;
-      --shadow: none;
-      --shadow-hover: 0 0 0 1px var(--accent);
-      --font: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-    }
-    :root[data-theme="terminal"] .card { border-radius: 2px; }
-    :root[data-theme="terminal"] .chip { border-radius: 2px; }
-    :root[data-theme="arcade"] {
+      color-scheme: dark;
       --bg: #120f22;
-      --card: #1a1532;
       --fg: #f2eefc;
-      --muted: #a79fc6;
-      --line: #2d2654;
-      --chip: #1c1738;
       --accent: #c4ff3d;
-      --ice: #7df9ff;
-      --pink: #ff6b8a;
-      --land: #9d8fd6;
-      --shadow: 0 1px 2px rgba(0,0,0,.5);
-      --shadow-hover: 0 0 0 1px var(--accent), 0 6px 18px rgba(196,255,61,.12);
     }
-    :root[data-theme="arcade"] .chip.domain { color: var(--ice); }
-    :root[data-theme="arcade"] .repo:hover { color: var(--pink); border-color: var(--pink); }
-    :root[data-theme="arcade"] ul.manage li::marker { color: var(--land); }
     * { box-sizing: border-box; }
+    html, body { height: 100%; }
     body {
       margin: 0;
       background: var(--bg);
       color: var(--fg);
-      font: 16px/1.5 var(--font, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif);
-      -webkit-font-smoothing: antialiased;
-    }
-    main {
-      max-width: 54rem;
-      margin: 0 auto;
-      padding: 3.5rem 1rem 5rem;
-    }
-    header {
+      font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
       display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      margin: 0 0 1.75rem;
+      align-items: center;
+      overflow: hidden;
     }
-    h1 {
-      font-size: 1.5rem;
-      margin: 0;
-      letter-spacing: -.01em;
-    }
-    .sub {
-      margin: .25rem 0 0;
-      font-size: .85rem;
-      color: var(--muted);
-    }
-    #theme {
-      font: inherit;
-      font-size: 1rem;
-      line-height: 1;
-      color: var(--muted);
-      background: var(--chip);
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      padding: .4em .6em;
-      cursor: pointer;
-    }
-    #theme:hover { color: var(--fg); border-color: var(--accent); }
-    :root[data-theme="terminal"] #theme { border-radius: 2px; }
-    .toolbar {
-      display: flex;
-      gap: .5rem;
-      margin: 0 0 1rem;
-    }
-    #search {
-      flex: 1;
-      min-width: 0;
-      font: inherit;
-      font-size: .95rem;
-      color: var(--fg);
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: 10px;
-      padding: .5em .8em;
-    }
-    #search:focus { outline: none; border-color: var(--accent); }
-    #search::placeholder { color: var(--muted); }
-    #sort,
-    #expand {
-      font: inherit;
-      font-size: .85rem;
-      color: var(--muted);
-      background: var(--chip);
-      border: 1px solid var(--line);
-      border-radius: 10px;
-      padding: .5em .9em;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-    #sort:hover, #expand:hover { color: var(--fg); border-color: var(--accent); }
-    :root[data-theme="terminal"] #search,
-    :root[data-theme="terminal"] #sort,
-    :root[data-theme="terminal"] #expand { border-radius: 2px; }
-    .empty { color: var(--muted); margin: 0 0 1rem; }
-    .cards {
-      display: grid;
-      gap: 1rem;
-    }
-    .card {
-      position: relative;
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      box-shadow: var(--shadow);
-      transition: box-shadow .15s ease, transform .15s ease, border-color .15s ease;
-    }
-    .card:hover, .card:focus-visible {
-      box-shadow: var(--shadow-hover);
-      transform: translateY(-1px);
-      border-color: var(--accent);
-      outline: none;
-    }
-    /* Only a click on the body follows the title link (the title line collapses the
-       card), so only hovering the body underlines it. */
-    h2 a:hover, .card:has(.body:hover) h2 a { text-decoration: underline; }
-    h2 a { color: inherit; text-decoration: none; }
-    /* No overlay: the script below opens the card, so text stays selectable. */
-    .card { cursor: pointer; }
-    .repo {
-      margin-left: auto;
-      font-size: .8rem;
-      line-height: 1;
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      color: var(--muted);
-      text-decoration: none;
-      padding: .55em .8em;
-      margin: -.55em -.8em -.55em auto;
-      border: 1px solid transparent;
-      border-radius: 8px;
-    }
-    .repo:hover { color: var(--accent); border-color: var(--accent); }
-    .head {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: baseline;
-      gap: .4rem .6rem;
-      padding: 1.1rem 1.25rem 1.2rem;
-      list-style: none;
-      cursor: pointer;
-    }
-    .card[open] > .head { padding-bottom: .35rem; }
-    .head::-webkit-details-marker { display: none; }
-    .head::before { content: "\25B8"; width: .7em; margin-right: -.3rem; font-size: .8rem; color: var(--muted); }
-    .card[open] > .head::before { content: "\25BE"; }
-    .head:hover::before { color: var(--fg); }
-    .body { padding: 0 1.25rem 1.2rem; }
-    h2 {
-      font-size: 1.1rem;
-      margin: 0;
-      color: var(--accent);
-    }
-    .chip {
-      font-size: .74rem;
-      line-height: 1;
-      padding: .32em .6em;
-      border-radius: 999px;
-      background: var(--chip);
-      color: var(--muted);
-      white-space: nowrap;
-    }
-    .chip.domain {
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      color: var(--fg);
-    }
-    .blurb { margin: 0 0 .6rem; }
-    .stack {
-      margin: 0 0 .75rem;
-      font-size: .82rem;
-      line-height: 1.5;
-      color: var(--muted);
-    }
-    /* Screenshots are 16:10 and at most 26rem wide; one of another shape is cropped to
-       fit, keeping its top. Two or more in a card make a carousel: the strip scrolls
-       sideways (swipe, or a trackpad), and the script below adds arrows and dots. */
-    .shots, .carousel, .dots { max-width: 26rem; }
-    .shots {
-      display: flex;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      scroll-behavior: smooth;
-      scrollbar-width: none;
-      margin: 0 0 .75rem;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: var(--chip);
-    }
-    .shots::-webkit-scrollbar { display: none; }
-    .shots img {
-      flex: 0 0 100%;
-      display: block;
-      width: 100%;
-      height: auto;
-      aspect-ratio: 16 / 10;
-      object-fit: cover;
-      object-position: top;
-      scroll-snap-align: start;
-    }
-    .carousel { position: relative; margin: 0 0 .4rem; }
-    .carousel .shots { margin: 0; }
-    .step {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      display: grid;
-      place-items: center;
-      width: 2rem;
-      height: 2rem;
-      padding: 0 0 .1rem;
-      font: inherit;
-      font-size: 1.25rem;
-      line-height: 1;
-      color: var(--fg);
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      cursor: pointer;
-      opacity: 0;
-      transition: opacity .15s ease;
-    }
-    .step.prev { left: .6rem; }
-    .step.next { right: .6rem; }
-    .carousel:hover .step, .step:focus-visible { opacity: .92; }
-    .step:hover { color: var(--accent); border-color: var(--accent); }
-    @media (hover: none) { .step { display: none; } }
-    .dots { display: flex; justify-content: center; margin: 0 0 .45rem; }
-    .dots button { width: 1.2rem; height: 1.2rem; padding: 0; border: 0; background: none; cursor: pointer; }
-    .dots button::before { content: ""; display: block; width: .4rem; height: .4rem; margin: auto; border-radius: 999px; background: var(--muted); opacity: .45; }
-    .dots button[aria-current="true"]::before { background: var(--accent); opacity: 1; }
-    @media (prefers-reduced-motion: reduce) { .shots { scroll-behavior: auto; } }
-    :root[data-theme="terminal"] .shots, :root[data-theme="terminal"] .step { border-radius: 2px; }
-    :root[data-theme="terminal"] .shots img { filter: grayscale(1) sepia(1) hue-rotate(70deg) saturate(2.5) brightness(.85); }
-    .label {
-      font-size: .7rem;
-      font-weight: 600;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin: 0 0 .3rem;
-    }
-    summary.label {
-      cursor: pointer;
-      width: max-content;
-      list-style: none;
-      user-select: none;
-    }
-    summary.label::-webkit-details-marker { display: none; }
-    summary.label::before { content: "\25B8"; display: inline-block; width: 1em; }
-    details[open] > summary.label::before { content: "\25BE"; }
-    summary.label:hover { color: var(--fg); }
-    ul.manage {
-      margin: 0;
-      padding-left: 1.1rem;
-      font-size: .88rem;
-      line-height: 1.5;
-    }
-    ul.manage li { margin: .15rem 0; }
-    ul.manage li::marker { color: var(--muted); }
-    code {
-      font: .92em ui-monospace, SFMono-Regular, Menlo, monospace;
-      background: var(--chip);
-      padding: .05em .3em;
-      border-radius: 3px;
-    }
-    footer {
-      margin-top: 2.5rem;
-      text-align: right;
-    }
-    .fish { position: relative; display: inline-block; padding: 0; border: 0; background: none; cursor: pointer; transition: translate 1.3s ease-in-out; }
-    .ow { position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); color: var(--fg); font-size: .8rem; opacity: 0; pointer-events: none; }
-    @keyframes ow { from { opacity: 1; } to { opacity: 0; translate: 0 -6px; } }
+    h1 { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); margin: 0; }
+    .pond { width: 100%; padding: 0 16px; text-align: right; }
+    .fish { position: relative; display: inline-block; padding: 0; border: 0; background: none; cursor: pointer; transition: translate var(--dur, 1.3s) ease-in-out; }
+    .ow { position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); color: var(--fg); font-size: 1rem; opacity: 0; pointer-events: none; }
+    @keyframes ow { from { opacity: 1; } to { opacity: 0; translate: 0 -8px; } }
     .fish.hurt .ow { animation: ow 1s ease-in; }
-    .fish svg { display: block; opacity: .8; }
-    .fish:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-    /* The fish rests at either edge of the column. .away parks it --span to the left, facing the way it swam. */
+    .fish svg { display: block; opacity: .85; }
+    .fish:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+    /* The fish rests at either edge of the pond. .away parks it --span to the left, facing the way it swam. */
     .fish.away { translate: calc(-1 * var(--span)) 0; }
     .fish.away svg { transform: scaleX(-1); }
-    @keyframes bob { 50% { translate: 0 -2px; } }
+    @keyframes bob { 50% { translate: 0 -3px; } }
     .fish.swimming:not(.stunned) svg { animation: bob .6s ease-in-out infinite; }
     /* A stunned fish holds still with an x for an eye until it's poked again. */
     .fish .x, .fish.stunned .eye { display: none; }
     .fish.stunned .x { display: inline; }
     @media (prefers-reduced-motion: reduce) { .fish { transition: none; } .fish.swimming svg { animation: none; } @keyframes ow { from { opacity: 1; } to { opacity: 0; } } }
-    footer a { color: inherit; }
   </style>
 </head>
 <body>
-  <main>
-    <header>
-      <div>
-        <h1>tfiish</h1>
-        <p class="sub">solo side projects · last updated <time id="updated" datetime="2026-10-28">2026-10-28</time></p>
-      </div>
-      <!-- Cycles through THEMES below. Add a theme: a :root[data-theme="…"] block above, and its name here. -->
-      <button id="theme" type="button" aria-label="Switch theme">theme</button>
-    </header>
-
-    <div class="toolbar">
-      <input id="search" type="search" placeholder="Search projects" aria-label="Search projects" autocomplete="off">
-      <button id="sort" type="button" aria-label="Change sort order">&#8597;&#65039;</button>
-      <button id="expand" type="button" aria-label="Expand or collapse all cards">collapse</button>
-    </div>
-    <p id="empty" class="empty" hidden>No projects match.</p>
-
-    <!-- A click on a card's title line collapses the card. A click on its body follows the title link, unless it lands on
-         another link or button, or ends a text selection. Document order here is the default sort order. To add a project,
-         copy a whole <details class="card"> block into place. Screenshots go in img/ at 1600×1000; more than one in a
-         card's .shots makes a carousel. -->
-    <div class="cards">
-
-      <details class="card" open>
-        <summary class="head">
-          <h2><a class="main" href="https://unspoiled.xyz">Unspoiled</a></h2>
-          <span class="chip domain">unspoiled.xyz</span>
-          <span class="chip">Porkbun</span>
-          <a class="repo" href="https://github.com/tfiish/unspoiled" aria-label="Repository" title="Repository">&lt;/&gt;</a>
-        </summary>
-        <div class="body">
-          <p class="blurb">Spoiler-free sports highlights aggregator.</p>
-          <div class="shots">
-            <img src="img/unspoiled.webp" width="1600" height="1000" alt="Unspoiled's home page, with games by date and league" loading="lazy">
-            <img src="img/unspoiled-calendar.webp" width="1600" height="1000" alt="Unspoiled's calendar for October 2026" loading="lazy">
-            <img src="img/unspoiled-teams.webp" width="1600" height="1000" alt="Unspoiled's team list, with favorites first" loading="lazy">
-            <img src="img/unspoiled-what-to-show.webp" width="1600" height="1000" alt="Unspoiled's What to show panel, for choosing leagues and tournaments" loading="lazy">
-          </div>
-          <p class="stack">pnpm monorepo · Next.js 15 web app on Vercel · Supabase Postgres · ingest worker on GitHub Actions</p>
-          <details class="managing">
-          <summary class="label">Managing</summary>
-          <ul class="manage">
-            <li>Domain at <strong>Porkbun</strong>. Hosted on <strong>Vercel</strong> under its own account, reading from <strong>Supabase</strong>.</li>
-            <li>Highlights come from the <strong>YouTube Data API</strong> and play through YouTube embeds; a lapsed or over-quota API key means no new videos. Reddit game-thread links come from <strong>Arctic Shift</strong>, a one-person Reddit archive with no uptime guarantee.</li>
-            <li>Ingest runs on <strong>GitHub Actions</strong>: a full daily pass, and an hourly video pass fired by an outside cron service because GitHub's own schedule is unreliable at that cadence.</li>
-            <li>A weekly audit posts findings to a <strong>GitHub</strong> issue every Monday. A quarterly drift audit, run by <strong>Claude Code</strong>, posts to a long-lived issue.</li>
-            <li><strong>UptimeRobot</strong> runs two monitors and emails when either goes down: one polls the site, so Down means readers can't reach it; the other polls the health endpoint, so Down means the site is fine but ingest has stopped.</li>
-            <li>The hi@ inbox is <strong>Zoho Mail</strong>, which also receives the suggestions form. Outbound mail, including the form, delivers through <strong>Resend</strong>.</li>
-            <li><strong>PostHog</strong> (EU cloud) handles analytics (cookieless) and error tracking.</li>
-            <li>Two tokens expire yearly: an <strong>Anthropic</strong> token for the drift audit and a <strong>GitHub</strong> personal access token for the hourly trigger. Rotate them together, ahead of time.</li>
-          </ul>
-          </details>
-        </div>
-      </details>
-
-      <details class="card" open>
-        <summary class="head">
-          <h2><a class="main" href="https://wholewideworld.app">Whole Wide World</a></h2>
-          <span class="chip domain">wholewideworld.app</span>
-          <span class="chip">Porkbun</span>
-          <a class="repo" href="https://github.com/tfiish/wholewideworld" aria-label="Repository" title="Repository">&lt;/&gt;</a>
-        </summary>
-        <div class="body">
-          <p class="blurb">A mobile-first web app that uses spaced repetition to teach where every country, state, and province is, on a globe you can spin and zoom.</p>
-          <div class="shots">
-            <img src="img/wholewideworld.webp" width="1600" height="1000" alt="Whole Wide World's home screen in its light theme, with the globe and the current deck" loading="lazy">
-            <img src="img/wholewideworld-decks.webp" width="1600" height="1000" alt="Whole Wide World's Decks list, with progress and what's due" loading="lazy">
-            <img src="img/wholewideworld-locate.webp" width="1600" height="1000" alt="A Locate question in Whole Wide World, with a dotted line from a missed guess to the answer" loading="lazy">
-          </div>
-          <p class="stack">Vite · React · TypeScript · PWA with a service worker · progress in IndexedDB on the reader's device · d3-geo · ts-fsrs · Cloudflare Pages, built from the <code>release</code> branch · a Cloudflare Worker with Durable Objects for Magic Transfer, deployed by hand with Wrangler</p>
-          <details class="managing">
-          <summary class="label">Managing</summary>
-          <ul class="manage">
-            <li>Own domain at <strong>Porkbun</strong>, auto-renew on. DNS lives at <strong>Cloudflare</strong>, not Porkbun.</li>
-            <li><strong>Cloudflare</strong> does everything else: Pages builds on every push to <code>release</code> on <strong>GitHub</strong>, so the repo is part of the deploy path; it also issues the certificate, redirects www, runs Email Routing, and hosts the Magic Transfer relay.</li>
-            <li>The <strong>Magic Transfer</strong> relay is a Cloudflare Worker on <code>/api/transfer/*</code>, on the Workers Free plan. It doesn't deploy from GitHub: run <code>pnpm relay:deploy</code> (Wrangler, logged in on the Mac) whenever <code>relay/</code> changes, before shipping.</li>
-            <li>Mail to hi@ forwards to the <strong>Gmail</strong> inbox via <strong>Cloudflare Email Routing</strong>. Catch-all is off, so any other address is dropped.</li>
-            <li><strong>PostHog</strong> (EU cloud) handles analytics (cookieless) and error tracking.</li>
-            <li>No accounts. Reader progress lives in their own browser; Magic Transfer passes an encrypted copy through the relay, which deletes it once it's taken or after 15 minutes.</li>
-            <li>Yearly: refresh the <strong>Natural Earth</strong> data and the <strong>UN</strong> member list, and check the relay with the <code>curl</code> in the README.</li>
-          </ul>
-          </details>
-        </div>
-      </details>
-
-      <details class="card" open>
-        <summary class="head">
-          <h2><a class="main" href="https://1qrl.app">1QRL</a></h2>
-          <span class="chip domain">1qrl.app</span>
-          <span class="chip">Porkbun</span>
-          <span class="chip">Onespot</span>
-          <a class="repo" href="https://github.com/onespotapps/1qrl" aria-label="Repository" title="Repository">&lt;/&gt;</a>
-        </summary>
-        <div class="body">
-          <p class="blurb">Tiny links, big QRs. A URL shortener whose short links encode into low-density QR codes that still scan from across a room.</p>
-          <div class="shots">
-            <img src="img/1qrl.webp" width="1600" height="1000" alt="1QRL's home page" loading="lazy">
-          </div>
-          <p class="stack">Next.js · React · TypeScript · Tailwind · Supabase (Postgres, auth) · Vercel, with a Vercel cron and pg_cron · ships via <code>npm run deploy</code></p>
-          <details class="managing">
-          <summary class="label">Managing</summary>
-          <ul class="manage">
-            <li>A <strong>Onespot</strong> product. Mail, legal, and routing all go through that entity; the contact address is hi@ on the domain.</li>
-            <li>Short links live at <code>1qrl.cc/</code>; the app itself is on <code>1qrl.app</code>.</li>
-            <li>Both domains at <strong>Porkbun</strong> on auto-renew.</li>
-            <li>Two <strong>Supabase</strong> projects, staging and production. A daily cron pings both so the free tier doesn't pause them.</li>
-            <li>Anonymous link creation on the home page is gated by <strong>Cloudflare Turnstile</strong>.</li>
-            <li>Auth email goes out through <strong>Resend</strong>. A weekly DMARC summary from <strong>Postmark</strong> lands in hi@.</li>
-            <li>Monthly: <strong>Supabase</strong> and <strong>Vercel</strong> usage, <strong>Resend</strong> quota, <strong>Search Console</strong>.</li>
-            <li>Sign in with <strong>Google</strong> on staging every five months or so, so Google doesn't retire the unused OAuth client.</li>
-          </ul>
-          </details>
-        </div>
-      </details>
-
-      <details class="card" open>
-        <summary class="head">
-          <h2><a class="main" href="https://github.com/tfiish/storystamper">StoryStamper</a></h2>
-          <span class="chip">GitHub, public</span>
-          <span class="chip">Mac app</span>
-          <a class="repo" href="https://github.com/tfiish/storystamper" aria-label="Repository" title="Repository">&lt;/&gt;</a>
-        </summary>
-        <div class="body">
-          <p class="blurb">A native, lightweight Mac app to quickly add Instagram-story-style text blocks to a vertical video.</p>
-          <div class="shots">
-            <img src="img/storystamper.webp" width="1600" height="1000" alt="StoryStamper's editor, with a video loaded and a text block on it" loading="lazy">
-          </div>
-          <p class="stack">Swift 6 · SwiftUI · Swift Package, no Xcode project · FFmpeg for export · ad-hoc signed, not notarized · built with <code>Scripts/make-app.sh</code></p>
-          <details class="managing">
-          <summary class="label">Managing</summary>
-          <ul class="manage">
-            <li>Nothing to manage: no hosting, no domain, nothing runs on a schedule. It ships as source and tagged <strong>GitHub</strong> Releases, published by hand with the <code>gh</code> CLI.</li>
-            <li>Building needs macOS 14 or later and <strong>Xcode</strong> 16 or the Command Line Tools. Export needs <strong>FFmpeg</strong>, from <strong>Homebrew</strong> by default or bundled into the app; fast export needs a build with Apple's VideoToolbox encoder.</li>
-          </ul>
-          </details>
-        </div>
-      </details>
-
-      <details class="card" open>
-        <summary class="head">
-          <h2><a class="main" href="https://markmadness.vercel.app">Mark Madness</a></h2>
-          <span class="chip domain">markmadness.vercel.app</span>
-          <span class="chip">no custom domain</span>
-          <a class="repo" href="https://github.com/tfiish/markmadness" aria-label="Repository" title="Repository">&lt;/&gt;</a>
-        </summary>
-        <div class="body">
-          <p class="blurb">The official portal for all things Mark Madness (private for competitors only).</p>
-          <div class="shots">
-            <img src="img/markmadness.webp" width="1600" height="1000" alt="The Mark Madness 2026 dashboard" loading="lazy">
-          </div>
-          <p class="stack">Vite · React · TypeScript · Tailwind · shadcn/Radix · Vercel Hobby plan</p>
-          <details class="managing">
-          <summary class="label">Managing</summary>
-          <ul class="manage">
-            <li>Backend is <strong>Lovable Cloud</strong>, which is <strong>Supabase</strong> underneath: auth, database, and edge functions. Migrations are managed centrally and never run locally.</li>
-            <li><strong>Vercel</strong> Hobby only deploys pushes from the repo owner.</li>
-            <li>Backend credentials live in a gitignored <code>.env</code>, never in the repo.</li>
-          </ul>
-          </details>
-        </div>
-      </details>
-
-      <details class="card" open>
-        <summary class="head">
-          <h2><a class="main" href="https://tfiish.github.io">tfiish</a></h2>
-          <span class="chip domain">tfiish.github.io</span>
-          <a class="repo" href="https://github.com/tfiish/tfiish.github.io" aria-label="Repository" title="Repository">&lt;/&gt;</a>
-        </summary>
-        <div class="body">
-          <p class="blurb">This page.</p>
-          <div class="shots">
-            <img src="img/tfiish.webp" width="2000" height="1443" alt="This page's project cards" loading="lazy">
-          </div>
-          <p class="stack">GitHub Pages</p>
-          <details class="managing">
-          <summary class="label">Managing</summary>
-          <ul class="manage">
-            <li>Nothing to manage: push updates (to the HTML files) to <code>main</code> and <strong>GitHub Pages</strong> redeploys.</li>          </ul>
-          </details>
-        </div>
-      </details>
-
-    </div>
-
-    <footer>
-      <!-- The fish from favicon.svg, inline so its eye can turn to an x. -->
-      <button class="fish" id="fish" type="button" aria-label="Poke the fish">
-        <svg viewBox="0 0 16 16" width="32" height="32" shape-rendering="crispEdges" aria-hidden="true">
-          <g fill="#c4ff3d">
-            <rect x="7" y="4" width="4" height="1"/>
-            <rect x="6" y="5" width="6" height="1"/>
-            <rect x="5" y="6" width="8" height="1"/>
-            <rect x="4" y="7" width="10" height="2"/>
-            <rect x="5" y="9" width="8" height="1"/>
-            <rect x="6" y="10" width="6" height="1"/>
-            <rect x="7" y="11" width="4" height="1"/>
-            <rect x="2" y="5" width="1" height="1"/>
-            <rect x="2" y="6" width="2" height="1"/>
-            <rect x="2" y="9" width="2" height="1"/>
-            <rect x="2" y="10" width="1" height="1"/>
-          </g>
-          <rect class="eye" x="11" y="6" width="1" height="1" fill="#7df9ff"/>
-          <g class="x" fill="#1a1532">
-            <rect x="9" y="5" width="1" height="1"/>
-            <rect x="11" y="5" width="1" height="1"/>
-            <rect x="10" y="6" width="1" height="1"/>
-            <rect x="9" y="7" width="1" height="1"/>
-            <rect x="11" y="7" width="1" height="1"/>
-          </g>
-        </svg>
-        <span class="ow" aria-hidden="true">ow</span>
-      </button>
-    </footer>
-  </main>
+  <!-- Nothing but the fish. The side-projects list is at /projects/, and SleekSleep's pages are at /sleeksleep/;
+       neither is linked from here. The fish is the one from favicon.svg and the projects page's footer. -->
+  <h1>tfiish</h1>
+  <div class="pond">
+    <button class="fish" id="fish" type="button" aria-label="Poke the fish">
+      <svg viewBox="0 0 16 16" width="64" height="64" shape-rendering="crispEdges" aria-hidden="true">
+        <g fill="#c4ff3d">
+          <rect x="7" y="4" width="4" height="1"/>
+          <rect x="6" y="5" width="6" height="1"/>
+          <rect x="5" y="6" width="8" height="1"/>
+          <rect x="4" y="7" width="10" height="2"/>
+          <rect x="5" y="9" width="8" height="1"/>
+          <rect x="6" y="10" width="6" height="1"/>
+          <rect x="7" y="11" width="4" height="1"/>
+          <rect x="2" y="5" width="1" height="1"/>
+          <rect x="2" y="6" width="2" height="1"/>
+          <rect x="2" y="9" width="2" height="1"/>
+          <rect x="2" y="10" width="1" height="1"/>
+        </g>
+        <rect class="eye" x="11" y="6" width="1" height="1" fill="#7df9ff"/>
+        <g class="x" fill="#120f22">
+          <rect x="9" y="5" width="1" height="1"/>
+          <rect x="11" y="5" width="1" height="1"/>
+          <rect x="10" y="6" width="1" height="1"/>
+          <rect x="9" y="7" width="1" height="1"/>
+          <rect x="11" y="7" width="1" height="1"/>
+        </g>
+      </svg>
+      <span class="ow" aria-hidden="true">ow</span>
+    </button>
+  </div>
   <script>
-    // The date in the HTML is the fallback. On load, the page asks GitHub for the
-    // repo's latest commit so the date stays true without anyone editing it.
-    fetch('https://api.github.com/repos/tfiish/tfiish.github.io/commits/main', { headers: { Accept: 'application/vnd.github+json' } })
-      .then(function (r) { return r.ok ? r.json() : null; })
-      .then(function (c) {
-        var iso = c && c.commit && c.commit.committer && c.commit.committer.date;
-        if (!iso) return;
-        var el = document.getElementById('updated');
-        el.dateTime = iso;
-        el.textContent = iso.slice(0, 10);
-      })
-      .catch(function () {});
     (function () {
-      var grid = document.querySelector('.cards');
-      var cards = Array.prototype.slice.call(grid.children);
-      var search = document.getElementById('search');
-      var sortButton = document.getElementById('sort');
-      var empty = document.getElementById('empty');
-      var SORTS = ['default', 'A\u2013Z', 'Z\u2013A'];
-      var sort = 'default';
-      try { if (SORTS.indexOf(localStorage.getItem('sort')) !== -1) sort = localStorage.getItem('sort'); } catch (e) {}
-
-      function title(card) { return card.querySelector('h2').textContent.trim(); }
-
-      function render() {
-        var q = search.value.trim().toLowerCase();
-        var ordered = cards.slice();
-        if (sort !== 'default') {
-          ordered.sort(function (a, b) { return title(a).localeCompare(title(b), undefined, { sensitivity: 'base' }); });
-          if (sort === 'Z\u2013A') ordered.reverse();
-        }
-        var shown = 0;
-        ordered.forEach(function (card) {
-          var hit = !q || card.textContent.toLowerCase().indexOf(q) !== -1;
-          card.hidden = !hit;
-          if (hit) shown++;
-          grid.appendChild(card);
-        });
-        empty.hidden = shown > 0;
-        sortButton.textContent = sort === 'default' ? '\u2195\uFE0F' : sort;
-      }
-
-      search.addEventListener('input', render);
-      // A bare "f" anywhere on the page jumps to the search box. Cmd/Ctrl+F stays the browser's.
-      document.addEventListener('keydown', function (e) {
-        if (e.key !== 'f' || e.metaKey || e.ctrlKey || e.altKey) return;
-        if (e.target.closest('input, textarea, [contenteditable]')) return;
-        e.preventDefault();
-        search.focus();
-        search.select();
-      });
-      search.addEventListener('keydown', function (e) { if (e.key === 'Escape') search.blur(); });
-      // Expand or collapse every card at once. The label says what the next click
-      // does: "expand" while any card is collapsed, otherwise "collapse".
-      var expandButton = document.getElementById('expand');
-      function syncExpand() {
-        var anyClosed = cards.some(function (c) { return !c.open; });
-        expandButton.textContent = anyClosed ? 'expand' : 'collapse';
-      }
-      expandButton.addEventListener('click', function () {
-        var open = cards.some(function (c) { return !c.open; });
-        cards.forEach(function (c) { c.open = open; });
-        syncExpand();
-      });
-      cards.forEach(function (c) { c.addEventListener('toggle', syncExpand); });
-      syncExpand();
-
-      sortButton.addEventListener('click', function () {
-        sort = SORTS[(SORTS.indexOf(sort) + 1) % SORTS.length];
-        try { localStorage.setItem('sort', sort); } catch (e) {}
-        render();
-      });
-      render();
-    })();
-    // Two or more screenshots in a card make a carousel. The strip scrolls on its own
-    // (swipe, or a trackpad); the arrows step through it, wrapping at the ends, and the
-    // dots follow along.
-    document.querySelectorAll('.shots').forEach(function (shots) {
-      var imgs = shots.querySelectorAll('img');
-      if (imgs.length < 2) return;
-      var carousel = document.createElement('div');
-      carousel.className = 'carousel';
-      shots.parentNode.insertBefore(carousel, shots);
-      carousel.appendChild(shots);
-      function index() { return shots.clientWidth ? Math.round(shots.scrollLeft / shots.clientWidth) : 0; }
-      function go(i) { shots.scrollTo({ left: ((i + imgs.length) % imgs.length) * shots.clientWidth }); }
-      [['prev', '‹', -1, 'Previous screenshot'], ['next', '›', 1, 'Next screenshot']].forEach(function (s) {
-        var b = document.createElement('button');
-        b.type = 'button';
-        b.className = 'step ' + s[0];
-        b.textContent = s[1];
-        b.setAttribute('aria-label', s[3]);
-        b.addEventListener('click', function () { go(index() + s[2]); });
-        carousel.appendChild(b);
-      });
-      var dots = document.createElement('div');
-      dots.className = 'dots';
-      Array.prototype.forEach.call(imgs, function (img, i) {
-        var b = document.createElement('button');
-        b.type = 'button';
-        b.setAttribute('aria-label', 'Screenshot ' + (i + 1) + ' of ' + imgs.length);
-        b.addEventListener('click', function () { go(i); });
-        dots.appendChild(b);
-      });
-      carousel.parentNode.insertBefore(dots, carousel.nextSibling);
-      function sync() {
-        var i = index();
-        Array.prototype.forEach.call(dots.children, function (b, j) { b.setAttribute('aria-current', String(j === i)); });
-      }
-      shots.addEventListener('scroll', sync, { passive: true });
-      sync();
-    });
-    document.querySelectorAll('.card').forEach(function (card) {
-      card.addEventListener('click', function (e) {
-        if (e.target.closest('a, summary, button')) return;
-        if (String(getSelection()).length) return;
-        var href = card.querySelector('h2 a').href;
-        if (e.metaKey || e.ctrlKey) window.open(href); else location.href = href;
-      });
-    });
-    (function () {
-      var THEMES = ['light', 'dark', 'terminal', 'arcade'];
-      var ICONS = { light: '\u2600\uFE0F', dark: '\uD83C\uDF19', terminal: '\uD83D\uDCBB', arcade: '\uD83D\uDD79\uFE0F' };
-      function show(name) { button.textContent = ICONS[name]; button.setAttribute('aria-label', 'Switch theme (now ' + name + ')'); }
-      var root = document.documentElement;
-      var button = document.getElementById('theme');
-      var saved = null;
-      try { saved = localStorage.getItem('theme'); } catch (e) {}
-      // With nothing saved the page follows the system, and the first click starts from whichever that is.
-      function current() { return root.dataset.theme || 'arcade'; }
-      function apply(name) {
-        root.dataset.theme = name;
-        show(name);
-        try { localStorage.setItem('theme', name); } catch (e) {}
-      }
-      if (THEMES.indexOf(saved) !== -1) apply(saved); else show(current());
-      button.addEventListener('click', function () {
-        apply(THEMES[(THEMES.indexOf(current()) + 1) % THEMES.length]);
-      });
-    })();
-    (function () {
-      // A mouse coming near the fish sends it to the other edge of the footer, where it waits to be disturbed again.
-      // Poking it stuns it in place; poking it again sends it on the way it faces.
+      // The projects page's fish, given the whole width. A mouse coming near sends it to the other edge, where it
+      // waits to be disturbed again. Poking it stuns it in place; poking it again sends it on the way it faces.
+      // It swims at the footer fish's speed, so a wide window means a longer swim, not a faster one.
       var fish = document.getElementById('fish');
       var still = matchMedia('(prefers-reduced-motion: reduce)');
-      var NEAR = 56;
+      var NEAR = 96;
+      var SPEED = 640; // px per second
       var span = 0;
       function measure() {
-        span = fish.parentNode.clientWidth - fish.offsetWidth;
+        span = fish.parentNode.clientWidth - 32 - fish.offsetWidth;
         fish.style.setProperty('--span', span + 'px');
+        fish.style.setProperty('--dur', Math.max(.6, span / SPEED) + 's');
       }
       function swim() {
         if (still.matches || fish.classList.contains('swimming') || fish.classList.contains('stunned')) return;
@@ -730,12 +126,12 @@
         }
         fish.classList.remove('stunned');
         if (!fish.classList.contains('swimming')) return swim();
-        // Finish the interrupted swim at the speed it was going: the time left scales with the distance left.
+        // Finish the interrupted swim at the same speed: the time left scales with the distance left.
         measure();
         var left = Math.abs((fish.classList.contains('away') ? -span : 0) - (parseFloat(fish.style.translate) || 0));
         fish.style.transition = '';
         if (left < 1) return landed();
-        fish.style.transitionDuration = (1.3 * left / span) + 's';
+        fish.style.transitionDuration = (left / SPEED) + 's';
         fish.style.translate = '';
       }
       // pointerdown counts a press on a fish that swims off before the click would land;

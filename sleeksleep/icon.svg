@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <!-- The app icon's dark colorway (the app repo's Design/Icon/AppIcon-dark.svg), with corners rounded for a browser tab. -->
+  <rect width="1024" height="1024" rx="224" fill="#15152B"/>
+  <rect x="0" y="332" width="1024" height="40" fill="#8F8CF5" opacity="0.32"/>
+  <rect x="144" y="320" width="96" height="392" rx="48" fill="#8F8CF5" opacity="0.38"/>
+  <rect x="304" y="272" width="96" height="456" rx="48" fill="#8F8CF5" opacity="0.38"/>
+  <rect x="464" y="352" width="96" height="344" rx="48" fill="#8F8CF5" opacity="0.38"/>
+  <rect x="624" y="296" width="96" height="432" rx="48" fill="#8F8CF5" opacity="0.38"/>
+  <rect x="784" y="232" width="96" height="560" rx="48" fill="#8F8CF5"/>
+</svg>

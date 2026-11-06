@@ -1,5 +1,5 @@
 /* Shared by the SleekSleep support page and privacy policy. They follow the system's light or dark setting
-   rather than the home page's theme button, since the app's Settings links straight here. */
+   rather than the projects page's theme button: they stand apart from the rest of the site. */
 :root {
   color-scheme: light dark;
   --bg: #f7f7f5;
