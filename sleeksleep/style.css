@@ -6,7 +6,7 @@
   --fg: #1a1a1a;
   --muted: #66665f;
   --line: #e2e2dc;
-  --accent: #2554c7;
+  --accent: #4B47C9;
 }
 @media (prefers-color-scheme: dark) {
   :root {
@@ -14,7 +14,7 @@
     --fg: #ececec;
     --muted: #9a9a94;
     --line: #2c2c2c;
-    --accent: #7aa2ff;
+    --accent: #8F8CF5;
   }
 }
 * { box-sizing: border-box; }
