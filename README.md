@@ -1,6 +1,6 @@
 # tfiish.github.io
 
-A fish at the root, a page linking to side projects, and the pages of a project that needs a home. Edit the HTML and push to `main`; GitHub Pages serves it at https://tfiish.github.io. The `.nojekyll` file turns Jekyll off, so every file is served as written: pages are plain HTML, not Markdown.
+A fish at the root, a page linking to side projects, and the pages of a project that needs a home. Edit the HTML and push to `main`; GitHub Pages serves it at https://tfiish.github.io. Pages builds it with Jekyll, but the pages are plain HTML with no front matter, so each is served as written. `_config.yml` keeps this file and `AGENTS.md` off the site; any new note for the repo alone joins its `exclude` list, or it's public.
 
 | Path | What it is | URL |
 | --- | --- | --- |

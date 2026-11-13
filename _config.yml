@@ -1,0 +1,5 @@
+# Pages builds this site with Jekyll only so these notes stay unpublished. The pages are plain HTML with no front
+# matter, so Jekyll copies them as written.
+exclude:
+  - README.md
+  - AGENTS.md
