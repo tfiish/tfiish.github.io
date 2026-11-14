@@ -15,15 +15,15 @@
        page, it names no one but SleekSleep and links nowhere else on this site. -->
   <main>
     <h1>SleekSleep Privacy Policy</h1>
-    <p class="updated">Last updated: <time datetime="2026-11-13">2026-11-13</time></p>
+    <p class="updated">Last updated: <time datetime="2026-11-14">2026-11-14</time></p>
 
     <p>SleekSleep collects no data. It has no accounts, no server, no analytics, no ads, and no third-party code, and it never sends anything off your iPhone on its own. Nothing is sold, shared, or used for advertising.</p>
 
     <h2>What SleekSleep reads and writes</h2>
     <p>SleekSleep works only with Apple Health, and only with the sleep data you allow it to use.</p>
     <ul>
-      <li><strong>It writes</strong> the sleep times you log, as Sleep entries in Apple Health.</li>
-      <li><strong>It reads</strong> your Sleep data from Apple Health—including sleep saved by other apps and devices, if you allow it—to show your history and charts, and last night’s sleep on the widget.</li>
+      <li><strong>It writes</strong> the sleep times you log, as Sleep entries in Apple Health. Each entry also notes the time zone it was logged in, whether it came from the app or the widget, and which version of SleekSleep saved it. Like any sleep entry, these can be seen by other apps you allow to read your Sleep data.</li>
+      <li><strong>It reads</strong> your Sleep data from Apple Health—including sleep saved by other apps and devices, if you allow it—to show your history and charts, last night’s sleep on the widget, the times it suggests when you log, and whether today’s reminder is still needed.</li>
     </ul>
     <p>All charts are worked out on your device while the app is open. SleekSleep does not keep its own copy of your sleep data.</p>
 
@@ -31,17 +31,30 @@
     <p>SleekSleep keeps the following on your iPhone, in storage that only SleekSleep can read:</p>
     <ul>
       <li>Your settings, such as your reminder time and sleep target.</li>
-      <li>An in-progress entry that hasn’t reached Apple Health yet (like an in-progress sleep, or an entry the SleekSleep widget couldn’t save). Each is removed as soon as it’s saved to Apple Health or discarded.</li>
+      <li>An in-progress entry that hasn’t reached Apple Health yet (like an in-progress sleep, or an entry the SleekSleep widget couldn’t save). Each is removed once it’s saved to Apple Health or discarded.</li>
+      <li>A night the widget has just logged, kept for the few minutes the widget offers Undo, then removed the next time the widget refreshes or you open SleekSleep.</li>
     </ul>
+
+    <h2>What iOS keeps</h2>
+    <p>iOS keeps some things for every app, outside SleekSleep’s control:</p>
+    <ul>
+      <li>If you back up your iPhone, in iCloud or on a computer, the backup includes SleekSleep’s settings and anything still waiting to be saved.</li>
+      <li>To show them quickly, iOS keeps a picture of the app’s last screen, and may keep one of the SleekSleep widget.</li>
+      <li>While you’re sharing an export, iOS may also hold its own copy until the share is done.</li>
+    </ul>
+    <p>What happens to these is set by iOS and your backup settings, not by SleekSleep.</p>
 
     <h2>Exporting your sleep</h2>
     <p>If you choose Export CSV beside Download sleep data in Settings, SleekSleep makes a CSV file of the sleep it can read from Apple Health and hands it to the iOS share sheet. The file is kept in SleekSleep’s temporary storage only while the share sheet is open. It’s deleted when the sheet closes, or the next time you open SleekSleep if the app quit first. Where the file goes (such as AirDrop, an email, or your Files app) is your choice.</p>
 
     <h2>Reminders</h2>
-    <p>Reminders are scheduled by iOS on your iPhone. Nothing about them leaves your device.</p>
+    <p>Reminders are scheduled by iOS on your iPhone. Like any app’s notifications, iOS may also show them on a paired Apple Watch. SleekSleep itself sends nothing anywhere.</p>
+
+    <h2>Crash reports</h2>
+    <p>If you’ve chosen in iOS Settings to share analytics with app developers, Apple may pass us crash reports. They describe what the app was doing, not your sleep.</p>
 
     <h2>Apple Health and iCloud</h2>
-    <p>SleekSleep doesn’t use iCloud. If you’ve turned on Health in your iCloud settings, Apple syncs your Health data, including the entries SleekSleep saved, under the <a href="https://www.apple.com/legal/privacy/data/en/health-app/">Apple Health privacy policy</a> rather than this one.</p>
+    <p>SleekSleep doesn’t use iCloud itself. If you’ve turned on Health in your iCloud settings, Apple syncs your Health data, including the entries SleekSleep saved, under the <a href="https://www.apple.com/legal/privacy/data/en/health-app/">Apple Health privacy policy</a> rather than this one.</p>
 
     <h2>Your choices</h2>
     <ul>
@@ -53,8 +66,11 @@
     <h2>Changes to this policy</h2>
     <p>If this policy changes, the new version will be posted on this page with a new date.</p>
 
+    <h2>This page</h2>
+    <p>This policy and the support page are hosted on GitHub Pages. Like any website’s host, GitHub sees a visit when you open one, under GitHub’s own privacy statement. The app sends nothing when you open them.</p>
+
     <h2>Contact</h2>
-    <p>Questions about privacy? Email us at <a href="mailto:sleeksleep.app@outlook.com">sleeksleep.app@outlook.com</a> or see <a href="../">SleekSleep support</a>.</p>
+    <p>Questions about privacy? Email us at <a href="mailto:sleeksleep.app@outlook.com">sleeksleep.app@outlook.com</a> or see <a href="../">SleekSleep support</a>. If you email us, we receive your address and what you write, and use them only to answer you. The mail is kept in an Outlook.com mailbox, under Microsoft’s privacy statement.</p>
   </main>
 </body>
 </html>
