@@ -378,7 +378,7 @@
 
     <div class="toolbar">
       <input id="search" type="search" placeholder="Search projects" aria-label="Search projects" autocomplete="off">
-      <button id="sort" type="button" aria-label="Change sort order">&#8597;&#65039;</button>
+      <button id="sort" type="button" aria-label="Change sort order">sort</button>
       <button id="expand" type="button" aria-label="Expand or collapse all cards">collapse</button>
     </div>
     <p id="empty" class="empty" hidden>No projects match.</p>
@@ -663,7 +663,7 @@
           grid.appendChild(card);
         });
         empty.hidden = shown > 0;
-        sortButton.textContent = sort === 'default' ? '\u2195\uFE0F' : sort;
+        sortButton.textContent = sort === 'default' ? 'sort' : sort;
       }
 
       search.addEventListener('input', render);
