@@ -361,6 +361,7 @@
     .fish.stunned .x { display: inline; }
     @media (prefers-reduced-motion: reduce) { .fish { transition: none; } .fish.swimming svg { animation: none; } @keyframes ow { from { opacity: 1; } to { opacity: 0; } } }
     footer a { color: inherit; }
+    #updated[title] { cursor: help; }
   </style>
 </head>
 <body>
@@ -414,11 +415,12 @@
             <img src="img/unspoiled-teams.webp" width="1600" height="1000" alt="Unspoiled's team list in dark mode, with favorites first" loading="lazy">
             <img src="img/unspoiled-what-to-show.webp" width="1600" height="1000" alt="Unspoiled's What to show panel, for choosing leagues and tournaments" loading="lazy">
           </div>
-          <p class="stack">pnpm monorepo · Next.js 15 web app on Vercel · Supabase Postgres · ingest worker on GitHub Actions</p>
+          <p class="stack">pnpm monorepo · Next.js 15 web app on Vercel (tfiish account, Hobby plan) · Supabase Postgres · ingest worker on GitHub Actions</p>
           <details class="managing">
           <summary class="label">Managing</summary>
           <ul class="manage">
-            <li>Domain at <strong>Porkbun</strong>. Hosted on <strong>Vercel</strong> under its own account, reading from <strong>Supabase</strong>.</li>
+            <li>Domain at <strong>Porkbun</strong>. Hosted on <strong>Vercel</strong>, reading from <strong>Supabase</strong>.</li>
+            <li>The <strong>Vercel</strong> project is under the tfiish account, on the same Hobby plan as Mark Madness and Home Program Builder.</li>
             <li>Highlights come from the <strong>YouTube Data API</strong> and play through YouTube embeds; a lapsed or over-quota API key means no new videos. Reddit game-thread links come from <strong>Arctic Shift</strong>, a one-person Reddit archive with no uptime guarantee.</li>
             <li>Ingest runs on <strong>GitHub Actions</strong>: a full daily pass, and an hourly video pass fired by an outside cron service because GitHub's own schedule is unreliable at that cadence.</li>
             <li>A weekly audit posts findings to a <strong>GitHub</strong> issue every Monday. A quarterly drift audit, run by <strong>Claude Code</strong>, posts to a long-lived issue.</li>
@@ -526,12 +528,12 @@
           <div class="shots">
             <img src="img/markmadness.webp" width="1600" height="1000" alt="The Mark Madness 2026 dashboard" loading="lazy">
           </div>
-          <p class="stack">Vite · React · TypeScript · Tailwind · shadcn/Radix · Vercel Hobby plan</p>
+          <p class="stack">Vite · React · TypeScript · Tailwind · shadcn/Radix · Vercel (tfiish account, Hobby plan)</p>
           <details class="managing">
           <summary class="label">Managing</summary>
           <ul class="manage">
             <li>Backend is <strong>Lovable Cloud</strong>, which is <strong>Supabase</strong> underneath: auth, database, and edge functions. Migrations are managed centrally and never run locally.</li>
-            <li><strong>Vercel</strong> Hobby only deploys pushes from the repo owner.</li>
+            <li>Hosted on <strong>Vercel</strong> under the tfiish account, on the same Hobby plan as Unspoiled and Home Program Builder. Hobby only deploys pushes from the repo owner.</li>
             <li>Backend credentials live in a gitignored <code>.env</code>, never in the repo.</li>
           </ul>
           </details>
@@ -550,11 +552,11 @@
             <img src="img/home-exercises.webp" width="1600" height="1000" alt="Home Program Builder's day editor, with a warm-up, main lifts, and a superset of accessories" loading="lazy">
             <img src="img/home-exercises-pdf.webp" width="1600" height="1000" alt="Home Program Builder's PDF view of the same program, with sets, loads, effort, and video links" loading="lazy">
           </div>
-          <p class="stack">Plain HTML, CSS, and JavaScript (ES modules), no build step · Papa Parse from cdnjs · Google Sheets tabs published as CSV · PDF through the browser's print dialog · Vercel Hobby plan</p>
+          <p class="stack">Plain HTML, CSS, and JavaScript (ES modules), no build step · Papa Parse from cdnjs · Google Sheets tabs published as CSV · PDF through the browser's print dialog · Vercel (tfiish account, Hobby plan)</p>
           <details class="managing">
           <summary class="label">Managing</summary>
           <ul class="manage">
-            <li>Hosted on <strong>Vercel</strong> (Hobby) as static files. Every push to <code>main</code> on <strong>GitHub</strong> deploys to production; other branches get preview URLs.</li>
+            <li>Hosted on <strong>Vercel</strong> as static files, under the tfiish account, on the same Hobby plan as Unspoiled and Mark Madness. Every push to <code>main</code> on <strong>GitHub</strong> deploys to production; other branches get preview URLs.</li>
             <li>Content lives in a <a href="https://docs.google.com/spreadsheets/d/1q-uoxys_sKC_WBVeaUn1DbKYdn95e7KIIVZkMu3n4pk"><strong>Google Sheet</strong></a>. Its Library and Copy tabs are published to the web as CSV and fetched on every page load (via the links in <code>config.js</code>); edits show up in the web app within minutes.</li>
             <li>No data is stored or sent anywhere. A program lives only in the browser tab until it's saved as a PDF. No accounts, no analytics, no backend.</li>
           </ul>
@@ -625,6 +627,10 @@
         var el = document.getElementById('updated');
         el.dateTime = iso;
         el.textContent = iso.slice(0, 10);
+        // Hover shows the exact time and the commit GitHub Pages deploys from.
+        var subject = (c.commit.message || '').split('\n')[0];
+        if (subject.length > 80) subject = subject.slice(0, 79) + '\u2026';
+        el.title = iso.replace('T', ' ').replace('Z', ' UTC') + ' \u00b7 commit ' + c.sha.slice(0, 7) + (subject ? ': ' + subject : '');
       })
       .catch(function () {});
     (function () {
