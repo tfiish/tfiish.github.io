@@ -1,0 +1,11 @@
+{
+  "name": "tfiish-tools",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "shot": "node shot-tfiish.mjs"
+  },
+  "devDependencies": {
+    "playwright-core": "1.56.1"
+  }
+}
