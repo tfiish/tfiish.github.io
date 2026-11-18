@@ -628,9 +628,7 @@
         el.dateTime = iso;
         el.textContent = iso.slice(0, 10);
         // Hover shows the exact time and the commit GitHub Pages deploys from.
-        var subject = (c.commit.message || '').split('\n')[0];
-        if (subject.length > 80) subject = subject.slice(0, 79) + '\u2026';
-        el.title = iso.replace('T', ' ').replace('Z', ' UTC') + ' \u00b7 commit ' + c.sha.slice(0, 7) + (subject ? ': ' + subject : '');
+        el.title = iso.replace('T', ' ').replace('Z', ' UTC') + ' \u00b7 commit ' + c.sha.slice(0, 7);
       })
       .catch(function () {});
     (function () {
