@@ -421,7 +421,7 @@
           <summary class="label">Managing</summary>
           <ul class="manage">
             <li>Domain at <strong>Porkbun</strong>. Hosted on <strong>Vercel</strong>, reading from <strong>Supabase</strong>.</li>
-            <li>The <strong>Vercel</strong> project is under the tfiish account, on the same Hobby plan as Mark Madness and Home Program Builder.</li>
+            <li>The <strong>Vercel</strong> project is under the tfiish account, on the shared Hobby plan with some of the other projects listed here.</li>
             <li>Highlights come from the <strong>YouTube Data API</strong> and play through YouTube embeds; a lapsed or over-quota API key means no new videos. Reddit game-thread links come from <strong>Arctic Shift</strong>, a one-person Reddit archive with no uptime guarantee.</li>
             <li>Ingest runs on <strong>GitHub Actions</strong>: a full daily pass, and an hourly video pass fired by an outside cron service because GitHub's own schedule is unreliable at that cadence.</li>
             <li>A weekly audit posts findings to a <strong>GitHub</strong> issue every Monday. A quarterly drift audit, run by <strong>Claude Code</strong>, posts to a long-lived issue.</li>
@@ -534,7 +534,8 @@
           <summary class="label">Managing</summary>
           <ul class="manage">
             <li>Backend is <strong>Lovable Cloud</strong>, which is <strong>Supabase</strong> underneath: auth, database, and edge functions. Migrations are managed centrally and never run locally.</li>
-            <li>Hosted on <strong>Vercel</strong> under the tfiish account, on the same Hobby plan as Unspoiled and Home Program Builder. Hobby only deploys pushes from the repo owner.</li>
+            <li>The <strong>Vercel</strong> project is under the tfiish account, on the shared Hobby plan with some of the other projects listed here.</li>
+            <li><strong>Vercel</strong> Hobby only deploys pushes from the repo owner.</li>
             <li>Backend credentials live in a gitignored <code>.env</code>, never in the repo.</li>
           </ul>
           </details>
@@ -557,7 +558,8 @@
           <details class="managing">
           <summary class="label">Managing</summary>
           <ul class="manage">
-            <li>Hosted on <strong>Vercel</strong> as static files, under the tfiish account, on the same Hobby plan as Unspoiled and Mark Madness. Every push to <code>main</code> on <strong>GitHub</strong> deploys to production; other branches get preview URLs.</li>
+            <li>The <strong>Vercel</strong> project is under the tfiish account, on the shared Hobby plan with some of the other projects listed here.</li>
+            <li>Hosted on <strong>Vercel</strong> as static files. Every push to <code>main</code> on <strong>GitHub</strong> deploys to production; other branches get preview URLs.</li>
             <li>Content lives in a <a href="https://docs.google.com/spreadsheets/d/1q-uoxys_sKC_WBVeaUn1DbKYdn95e7KIIVZkMu3n4pk"><strong>Google Sheet</strong></a>. Its Library and Copy tabs are published to the web as CSV and fetched on every page load (via the links in <code>config.js</code>); edits show up in the web app within minutes.</li>
             <li>No data is stored or sent anywhere. A program lives only in the browser tab until it's saved as a PDF. No accounts, no analytics, no backend.</li>
           </ul>
