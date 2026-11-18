@@ -368,8 +368,8 @@
   <main>
     <header>
       <div>
-        <h1>tfiish</h1>
-        <p class="sub">solo side projects · last updated <time id="updated" datetime="2026-10-28">2026-10-28</time></p>
+        <h1>tfiish · solo side projects</h1>
+        <p class="sub">last updated <time id="updated" datetime="2026-11-18">2026-11-18</time></p>
       </div>
       <!-- Cycles through THEMES below. Add a theme: a :root[data-theme="…"] block above, and its name here. -->
       <button id="theme" type="button" aria-label="Switch theme">theme</button>
@@ -626,9 +626,13 @@
         if (!iso) return;
         var el = document.getElementById('updated');
         el.dateTime = iso;
-        el.textContent = iso.slice(0, 10);
-        // Hover shows the exact time and the commit GitHub Pages deploys from.
-        el.title = iso.replace('T', ' ').replace('Z', ' UTC') + ' \u00b7 commit ' + c.sha.slice(0, 7);
+        // The date and time in the reader's own time zone, e.g. 2026-11-18 09:55 PST.
+        var p = {};
+        new Intl.DateTimeFormat('en-US', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23', timeZoneName: 'short' })
+          .formatToParts(new Date(iso)).forEach(function (x) { p[x.type] = x.value; });
+        el.textContent = p.year + '-' + p.month + '-' + p.day + ' ' + p.hour + ':' + p.minute + ' ' + p.timeZoneName;
+        // Hover shows the commit GitHub Pages deploys from.
+        el.title = 'commit ' + c.sha.slice(0, 7);
       })
       .catch(function () {});
     (function () {
